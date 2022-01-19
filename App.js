@@ -5,6 +5,7 @@ import AndroidState from "./context/AndroidState";
 import "react-native-gesture-handler";
 
 import AllRoutes from "./screens/AllRoutes";
+import "expo-dev-client";
 
 const App = () => {
   return (
