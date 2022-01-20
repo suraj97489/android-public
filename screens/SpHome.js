@@ -4,9 +4,11 @@ import { StatusBar } from "expo-status-bar";
 import SalonpageOne from "../components/SalonpageOne";
 import SalonpageTwo from "../components/SalonpageTwo";
 import AndroidContext from "./../context/AndroidContext";
+import { EvilIcons } from "@expo/vector-icons";
 
 import SpModal from "../components/SpModal";
 import ShopOnOffConfirm from "../components/ShopOnOffConfirm";
+import SpinnerScreen from "../components/SpinnerScreen";
 
 const SpHome = (props) => {
   const androidcontext = useContext(AndroidContext);
@@ -58,11 +60,7 @@ const SpHome = (props) => {
       </>
     );
   } else {
-    return (
-      <View>
-        <Text>loading</Text>
-      </View>
-    );
+    return <SpinnerScreen />;
   }
 };
 

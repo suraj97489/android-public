@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, FlatList } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import AndroidContext from "./../context/AndroidContext";
 import { Input } from "react-native-elements";
+import SpinnerScreen from "../components/SpinnerScreen";
 
 const Report = () => {
   const androidcontext = useContext(AndroidContext);
@@ -94,11 +95,7 @@ const Report = () => {
       </>
     );
   } else {
-    return (
-      <View>
-        <Text>loading</Text>
-      </View>
-    );
+    return <SpinnerScreen />;
   }
 };
 

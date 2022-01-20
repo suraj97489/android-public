@@ -8,6 +8,7 @@ import ServicesSection from "./ServicesSection/ServicesSection";
 import colors from "../../theme/colors";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import AndroidContext from "../../context/AndroidContext";
+import SpinnerScreen from "../../components/SpinnerScreen";
 
 const EditProfile = () => {
   const [buttonText, setButtonText] = useState("Salon Info");
@@ -38,64 +39,69 @@ const EditProfile = () => {
     borderColor: colors.secondary,
     borderWidth: buttonText === "Services" ? 2 : 0,
   };
-  return (
-    <ScrollView>
-      <StatusBar style="auto" />
-      <View style={styles.title_div}>
-        <TouchableWithoutFeedback
-          onPress={() => {
-            androidcontext.setButtonDisabled(true);
-            setButtonText("Provider Info");
-          }}
-          style={[styles.topButtons, providerInfoActive]}
-        >
-          <Text
-            style={[
-              {
-                color: buttonText === "Provider Info" ? "white" : "black",
-              },
-              styles.topButtonsText,
-            ]}
+
+  if (androidcontext.salon?.salonUsername === androidcontext.customer?.email) {
+    return (
+      <ScrollView>
+        <StatusBar style="auto" />
+        <View style={styles.title_div}>
+          <TouchableWithoutFeedback
+            onPress={() => {
+              androidcontext.setButtonDisabled(true);
+              setButtonText("Provider Info");
+            }}
+            style={[styles.topButtons, providerInfoActive]}
           >
-            Provider Info
-          </Text>
-        </TouchableWithoutFeedback>
-        <TouchableWithoutFeedback
-          onPress={() => {
-            androidcontext.setButtonDisabled(true);
-            setButtonText("Salon Info");
-          }}
-          style={[styles.topButtons, salonInfoActive]}
-        >
-          <Text
-            style={[
-              { color: buttonText === "Salon Info" ? "white" : "black" },
-              styles.topButtonsText,
-            ]}
+            <Text
+              style={[
+                {
+                  color: buttonText === "Provider Info" ? "white" : "black",
+                },
+                styles.topButtonsText,
+              ]}
+            >
+              Provider Info
+            </Text>
+          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback
+            onPress={() => {
+              androidcontext.setButtonDisabled(true);
+              setButtonText("Salon Info");
+            }}
+            style={[styles.topButtons, salonInfoActive]}
           >
-            Salon Info
-          </Text>
-        </TouchableWithoutFeedback>
-        <TouchableWithoutFeedback
-          onPress={() => {
-            androidcontext.setButtonDisabled(true);
-            setButtonText("Services");
-          }}
-          style={[styles.topButtons, ServicesActive]}
-        >
-          <Text
-            style={[
-              { color: buttonText === "Services" ? "white" : "black" },
-              styles.topButtonsText,
-            ]}
+            <Text
+              style={[
+                { color: buttonText === "Salon Info" ? "white" : "black" },
+                styles.topButtonsText,
+              ]}
+            >
+              Salon Info
+            </Text>
+          </TouchableWithoutFeedback>
+          <TouchableWithoutFeedback
+            onPress={() => {
+              androidcontext.setButtonDisabled(true);
+              setButtonText("Services");
+            }}
+            style={[styles.topButtons, ServicesActive]}
           >
-            Services
-          </Text>
-        </TouchableWithoutFeedback>
-      </View>
-      {androidcontext.salon ? returnComponent() : <Text>Loading...</Text>}
-    </ScrollView>
-  );
+            <Text
+              style={[
+                { color: buttonText === "Services" ? "white" : "black" },
+                styles.topButtonsText,
+              ]}
+            >
+              Services
+            </Text>
+          </TouchableWithoutFeedback>
+        </View>
+        {androidcontext.salon ? returnComponent() : <Text>Loading...</Text>}
+      </ScrollView>
+    );
+  } else {
+    return <SpinnerScreen />;
+  }
 };
 
 export default EditProfile;
