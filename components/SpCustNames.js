@@ -12,6 +12,7 @@ import AndroidContext from "./../context/AndroidContext";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "../firebaseAndroid";
 import { AntDesign } from "@expo/vector-icons";
+import { Feather } from "@expo/vector-icons";
 
 const SpCustNames = ({ customer, index, provider }) => {
   const [custDisplay, setCustDisplay] = useState("none");
@@ -176,6 +177,22 @@ const SpCustNames = ({ customer, index, provider }) => {
             padding: 10,
           }}
         >
+          {customer.mobile ? (
+            <Pressable
+              style={{
+                flexDirection: "row",
+                backgroundColor: "green",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: 10,
+              }}
+            >
+              <Feather name="phone-call" size={15} color="white" />
+              <Text style={{ color: "white", marginHorizontal: 10 }}>
+                {customer.mobile}
+              </Text>
+            </Pressable>
+          ) : null}
           {customer?.service?.map((service, i) => {
             return (
               <Text style={styles.serviceText} key={i}>
