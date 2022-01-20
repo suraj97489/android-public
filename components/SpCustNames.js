@@ -1,5 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import {
+  Linking,
+  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -143,6 +145,18 @@ const SpCustNames = ({ customer, index, provider }) => {
       return { ...androidcontext.salon, serviceproviders: updatedproviders };
     });
   }
+
+  const dialCall = () => {
+    let phoneNumber = "";
+
+    if (Platform.OS === "android") {
+      phoneNumber = `tel:${+customer.mobile}`;
+    } else {
+      phoneNumber = `telprompt:${+customer.mobile}`;
+    }
+
+    Linking.openURL(phoneNumber);
+  };
   return (
     <TouchableWithoutFeedback
       onPress={customerDropDown}
@@ -179,6 +193,7 @@ const SpCustNames = ({ customer, index, provider }) => {
         >
           {customer.mobile ? (
             <Pressable
+              onPress={dialCall}
               style={{
                 flexDirection: "row",
                 backgroundColor: "green",
