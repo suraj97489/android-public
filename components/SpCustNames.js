@@ -108,6 +108,7 @@ const SpCustNames = ({ customer, index, provider }) => {
       services: serviceWithCharges,
       providerId: provider.id,
       customerPaid: customerPaid,
+      addedBy: customer.addedBy,
     };
 
     let salonReportUpdatedArray = [report, ...androidcontext.salon.salonReport];
