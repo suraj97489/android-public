@@ -76,22 +76,22 @@ const SalonInfo = () => {
     imageChanged ? uploadSalonPhoto(setBackendData) : setBackendData();
   }
 
-  const salonPopUpActivation = () => {
-    androidcontext.setSalon((salon) => {
-      const docRef = doc(db, "salon", androidcontext.salon.id);
-      const payLoad = { ...salon, popUpActivated: !salon.popUpActivated };
+  // const salonPopUpActivation = () => {
+  //   androidcontext.setSalon((salon) => {
+  //     const docRef = doc(db, "salon", androidcontext.salon.id);
+  //     const payLoad = { ...salon, popUpActivated: !salon.popUpActivated };
 
-      setDoc(docRef, payLoad).then(() => {
-        alert(
-          salon.popUpActivated
-            ? "popup deactivated succfully!!"
-            : "popup activated succeffully!!  booking list will affect by customer behavior"
-        );
-      });
+  //     setDoc(docRef, payLoad).then(() => {
+  //       alert(
+  //         salon.popUpActivated
+  //           ? "popup deactivated succfully!!"
+  //           : "popup activated succeffully!!  booking list will affect by customer behavior"
+  //       );
+  //     });
 
-      return { ...salon, popUpActivated: !salon.popUpActivated };
-    });
-  };
+  //     return { ...salon, popUpActivated: !salon.popUpActivated };
+  //   });
+  // };
 
   return (
     <View style={[styles.SalonInfo, { backgroundColor: colors.dark }]}>
@@ -189,7 +189,7 @@ const SalonInfo = () => {
           }}
         />
       </View>
-      <View style={styles.textAndSwitchWrapper}>
+      {/* <View style={styles.textAndSwitchWrapper}>
         <Text style={{ color: "white" }}>
           ACTIVATE NOTIFICATIONS FOR CUSTOMERS
           {"                                     "}
@@ -207,7 +207,7 @@ const SalonInfo = () => {
           onValueChange={salonPopUpActivation}
           value={androidcontext.salon?.popUpActivated || false}
         />
-      </View>
+      </View> */}
 
       <Button
         disabled={androidcontext.buttonDisabled}
