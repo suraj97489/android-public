@@ -34,7 +34,10 @@ const AndroidState = (props) => {
   const [shopOnOffModal, setShopOnOffModal] = useState(false);
 
   useEffect(() => {
+    let cancel = false;
+
     async function updateSalon() {
+      if (cancel) return;
       if (customer && salon === undefined) {
         const Snapshot = await getDocs(collection(db, "salon"));
 
@@ -53,6 +56,10 @@ const AndroidState = (props) => {
       }
     }
     updateSalon();
+
+    return () => {
+      cancel = true;
+    };
   }, [customer]);
 
   useEffect(() => {
