@@ -77,8 +77,8 @@ const SalonInfo = () => {
   }
 
   // const salonPopUpActivation = () => {
-  //   androidcontext.setSalon((salon) => {
-  //     const docRef = doc(db, "salon", androidcontext.salon.id);
+  //   maincontext.setSalon((salon) => {
+  //     const docRef = doc(db, "salon", maincontext.salon.id);
   //     const payLoad = { ...salon, popUpActivated: !salon.popUpActivated };
 
   //     setDoc(docRef, payLoad).then(() => {

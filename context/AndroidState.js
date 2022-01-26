@@ -55,19 +55,20 @@ const AndroidState = (props) => {
     updateSalon();
   }, [customer]);
 
-  onAuthStateChanged(auth, (user) => {
-    if (user) {
-      setCustomer(user);
-    } else {
-      setCustomer();
-    }
-  });
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        setCustomer(user);
+      } else {
+        setCustomer();
+      }
+    });
+
+    return unsubscribe;
+  }, []);
 
   useEffect(() => {
-    let cancel = false;
-    if (cancel) return;
-
-    onSnapshot(collection(db, "salon"), (snapshot) => {
+    const unsubscribe = onSnapshot(collection(db, "salon"), (snapshot) => {
       snapshot.docs.map((doc) => {
         setSalon((old) => {
           if (doc.data().salonUsername === old?.salonUsername) {
@@ -78,9 +79,8 @@ const AndroidState = (props) => {
         });
       });
     });
-    return () => {
-      cancel = true;
-    };
+
+    return unsubscribe;
   }, []);
   function resetSpModaldata() {
     let updatedServices = services.map((service) => ({
