@@ -12,7 +12,7 @@ import { Button, Input } from "react-native-elements";
 
 import colors from "../../../theme/colors";
 import AndroidContext from "./../../../context/AndroidContext";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, runTransaction, setDoc } from "firebase/firestore";
 import { db, storage } from "../../../firebaseAndroid";
 import { stringify } from "@firebase/util";
 import * as ImagePicker from "expo-image-picker";
@@ -127,23 +127,28 @@ const ProviderInfo = () => {
         provider.mobile,
     };
 
-    function setBackendData(url) {
+    async function setBackendData(url) {
       const docRef = doc(db, "salon", androidcontext.salon.id);
 
-      const payLoad = {
-        ...androidcontext.salon,
-        serviceproviders: [
-          ...androidcontext.salon.serviceproviders,
-          { ...addHim, providerPhoto: url },
-        ],
-      };
+      try {
+        await runTransaction(db, async (transaction) => {
+          const thisDoc = await transaction.get(docRef);
+          if (!thisDoc.exists()) {
+            throw "Document does not exist!";
+          }
+          let arr = [
+            ...thisDoc.data().serviceproviders,
+            { ...addHim, providerPhoto: url },
+          ];
 
-      setDoc(docRef, payLoad)
-        .then(() => {})
-        .catch((err) => {
-          alert(err);
+          transaction.update(docRef, { serviceproviders: arr });
+          return arr;
         });
+      } catch (e) {
+        console.error("Something went wrong");
+      }
     }
+
     if (provider.providerPhoto !== initialProviderPhoto) {
       uploadPhoto(addHim, setBackendData);
     } else {
