@@ -62,13 +62,15 @@ const ServicesSection = () => {
         if (!thisDoc.exists()) {
           throw "doc does not exist";
         }
-        let newServicesArray = thisDoc.data().services.map((service, index) => {
-          if (index === i) {
-            return updatedService;
-          } else {
-            return service;
+        let newServicesArray = androidcontext.salon.services.map(
+          (service, index) => {
+            if (index === i) {
+              return updatedService;
+            } else {
+              return service;
+            }
           }
-        });
+        );
         transaction.update(docRef, { services: newServicesArray });
       });
       setServiceIndex(null);
