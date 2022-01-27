@@ -34,27 +34,32 @@ const SpCustNames = ({ customer, index, provider }) => {
     };
   }, [sortButton]);
 
-  function sortingHandler() {
+  async function sortingHandler() {
     setSortButton(false);
-    androidcontext.setSalon((salon) => {
-      let newprovidersArray = salon.serviceproviders.map((each) => {
-        if (each.id === provider.id) {
-          each.customers = each.customers.filter((cust, i) => i !== index);
-          each.customers.splice(index - 1, 0, customer);
-          return each;
-        } else {
-          return each;
+    const docRef = doc(db, "salon", androidcontext.salon.id);
+    try {
+      await runTransaction(db, async (transaction) => {
+        const thisDoc = await transaction.get(docRef);
+
+        if (!thisDoc.exists()) {
+          throw "Document does not exist!";
         }
+
+        let newprovidersArray = thisDoc.data().serviceproviders.map((each) => {
+          if (each.id === provider.id) {
+            each.customers = each.customers.filter((cust, i) => i !== index);
+            each.customers.splice(index - 1, 0, customer);
+            return each;
+          } else {
+            return each;
+          }
+        });
+
+        transaction.update(docRef, { serviceproviders: newprovidersArray });
       });
-
-      const docRef = doc(db, "salon", androidcontext.salon.id);
-
-      const payLoad = { ...salon, serviceproviders: newprovidersArray };
-
-      setDoc(docRef, payLoad);
-
-      return { ...salon, serviceproviders: newprovidersArray };
-    });
+    } catch (e) {
+      console.error("Something went wrong");
+    }
   }
 
   function customerDropDown() {

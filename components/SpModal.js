@@ -97,6 +97,11 @@ const SpModal = () => {
           transaction.update(docRef, { serviceproviders: newprovidersarray });
         }
       });
+
+      androidcontext.setSalon((salon) => ({
+        ...salon,
+        serviceproviders: newprovidersarray,
+      }));
     } catch (e) {
       console.log("something went wrong");
     }
