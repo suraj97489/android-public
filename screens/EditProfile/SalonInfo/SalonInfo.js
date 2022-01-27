@@ -1,5 +1,5 @@
 import { stringify } from "@firebase/util";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, runTransaction, setDoc } from "firebase/firestore";
 import React, { useContext, useEffect, useState } from "react";
 import { Image } from "react-native";
 import { StyleSheet, Text, View, Switch } from "react-native";
@@ -56,22 +56,25 @@ const SalonInfo = () => {
   function SaveSalonChanges() {
     androidcontext.setButtonDisabled(true);
 
-    function setBackendData(url) {
+    async function setBackendData(url) {
       const docRef = doc(db, "salon", androidcontext.salon.id);
-      const payLoad = {
-        ...androidcontext.salon,
-        salonPhoto: url ? url : androidcontext.salon.salonPhoto,
-      };
-
-      setDoc(docRef, payLoad)
-        .then(() => {
-          console.log("salon updated successfully");
-          androidcontext.setButtonDisabled(true);
-        })
-        .catch((err) => {
-          alert(err);
-          androidcontext.setButtonDisabled(false);
+      try {
+        await runTransaction(db, async (transaction) => {
+          const thisDoc = await transaction.get(docRef);
+          if (!thisDoc.exists()) {
+            throw "document does not exist";
+          }
+          const payLoad = {
+            ...androidcontext.salon,
+            salonPhoto: url ? url : androidcontext.salon.salonPhoto,
+          };
+          transaction.set(docRef, payLoad);
         });
+        androidcontext.setButtonDisabled(true);
+      } catch (e) {
+        console.error("something went wrong");
+        androidcontext.setButtonDisabled(false);
+      }
     }
     imageChanged ? uploadSalonPhoto(setBackendData) : setBackendData();
   }
