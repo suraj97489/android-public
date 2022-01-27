@@ -1,4 +1,4 @@
-import { doc, setDoc } from "firebase/firestore";
+import { doc, runTransaction, setDoc } from "firebase/firestore";
 import React, { useContext, useEffect, useState } from "react";
 import { Pressable } from "react-native";
 import { StyleSheet, Text, TouchableWithoutFeedback, View } from "react-native";
@@ -25,32 +25,30 @@ const ProviderBefore = ({ provider }) => {
     };
   }, [bookingOn, provider]);
 
-  function bookingHandler() {
-    let newprovidersArray = androidcontext.salon.serviceproviders.map(
-      (each) => {
-        if (each.id === provider.id) {
-          each.bookingOn = !bookingOn;
-          setBookingOn(!bookingOn);
-          return each;
-        } else {
-          return each;
-        }
-      }
-    );
-
-    androidcontext.setSalon({
-      ...androidcontext.salon,
-      serviceproviders: newprovidersArray,
-    });
-
+  async function bookingHandler() {
     const docRef = doc(db, "salon", androidcontext.salon.id);
+    try {
+      await runTransaction(db, async (transaction) => {
+        const thisDoc = await transaction.get(docRef);
+        if (!thisDoc.exists()) {
+          throw "Document does not exist!";
+        }
 
-    const payLoad = {
-      ...androidcontext.salon,
-      serviceproviders: newprovidersArray,
-    };
+        let arr = thisDoc.data().serviceproviders.map((each) => {
+          if (each.id === provider.id) {
+            each.bookingOn = !bookingOn;
 
-    setDoc(docRef, payLoad);
+            return each;
+          } else {
+            return each;
+          }
+        });
+        transaction.update(docRef, { serviceproviders: arr });
+        return arr;
+      });
+    } catch (e) {
+      console.error("something went wrong");
+    }
   }
 
   const providerDropDown = () => {
