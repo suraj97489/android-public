@@ -39,59 +39,66 @@ const SpModal = () => {
     androidcontext.setServices(updatedServicesArray);
   }
 
-  function addOrEditCustomer() {
+  async function addOrEditCustomer() {
     androidcontext.setModalVisible(!androidcontext.modalVisible);
-    if (androidcontext.addingcustomer) {
-      let newprovidersarray = androidcontext.salon.serviceproviders.map(
-        (provider) => {
-          if (provider.id === androidcontext.providerId) {
-            provider.customers.push({
-              email: "",
-              mobile: androidcontext.customerMobile,
-              name: androidcontext.customerName,
-              service: androidcontext.selectedServices,
-              checkStatus: false,
-              addedBy: "provider",
-            });
+    const docRef = doc(db, "salon", androidcontext.salon.id);
+    try {
+      let newprovidersarray;
 
-            return provider;
-          } else {
-            return provider;
-          }
+      await runTransaction(db, async (transaction) => {
+        const thisDoc = await transaction.get(docRef);
+
+        if (!thisDoc.exists()) {
+          throw "Document does not exist!";
         }
-      );
 
-      const docRef = doc(db, "salon", androidcontext.salon.id);
-      const payLoad = {
-        ...androidcontext.salon,
-        serviceproviders: newprovidersarray,
-      };
-      setDoc(docRef, payLoad);
-    } else {
-      let newprovidersarray = androidcontext.salon.serviceproviders.map(
-        (provider) => {
-          if (provider.id === androidcontext.providerId) {
-            provider.customers = provider.customers.map((eachcust, index) => {
-              if (index === androidcontext.custIndex) {
-                eachcust.service = androidcontext.selectedServices;
-                return eachcust;
+        if (androidcontext.addingcustomer) {
+          newprovidersarray = thisDoc
+            .data()
+            .serviceproviders.map((provider) => {
+              if (provider.id === androidcontext.providerId) {
+                provider.customers.push({
+                  email: "",
+                  mobile: androidcontext.customerMobile,
+                  name: androidcontext.customerName,
+                  service: androidcontext.selectedServices,
+                  checkStatus: false,
+                  addedBy: "provider",
+                });
+
+                return provider;
               } else {
-                return eachcust;
+                return provider;
               }
             });
-            return provider;
-          } else {
-            return provider;
-          }
-        }
-      );
 
-      const docRef = doc(db, "salon", androidcontext.salon.id);
-      const payLoad = {
-        ...androidcontext.salon,
-        serviceproviders: newprovidersarray,
-      };
-      setDoc(docRef, payLoad);
+          transaction.update(docRef, { serviceproviders: newprovidersarray });
+        } else {
+          newprovidersarray = thisDoc
+            .data()
+            .serviceproviders.map((provider) => {
+              if (provider.id === androidcontext.providerId) {
+                provider.customers = provider.customers.map(
+                  (eachcust, index) => {
+                    if (index === androidcontext.custIndex) {
+                      eachcust.service = androidcontext.selectedServices;
+                      return eachcust;
+                    } else {
+                      return eachcust;
+                    }
+                  }
+                );
+                return provider;
+              } else {
+                return provider;
+              }
+            });
+
+          transaction.update(docRef, { serviceproviders: newprovidersarray });
+        }
+      });
+    } catch (e) {
+      console.log("something went wrong");
     }
   }
 
