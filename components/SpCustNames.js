@@ -8,7 +8,7 @@ import {
   TouchableWithoutFeedback,
   View,
 } from "react-native";
-import { Button } from "react-native-elements";
+
 import colors from "../theme/colors";
 import AndroidContext from "./../context/AndroidContext";
 import { doc, setDoc, runTransaction } from "firebase/firestore";
@@ -72,61 +72,65 @@ const SpCustNames = ({ customer, index, provider }) => {
     androidcontext.setCustIndex(index);
     androidcontext.resetSpModaldata();
   }
-  function done() {
-    let newprovidersarray = androidcontext.salon.serviceproviders.map(
-      (each) => {
-        if (each.id === provider.id) {
-          let time = new Date().getTime();
-          each.customers = each.customers.filter((cust, i) => i !== 0);
-          each.checkingTime = time + 1000 * 150;
-          each.customerResponded = false;
-          each.popUpTime = time + 1000 * 60;
-          return each;
-        } else {
-          return each;
-        }
-      }
-    );
-    androidcontext.setSalon({
-      ...androidcontext.salon,
-      serviceproviders: newprovidersarray,
-    });
-
-    let date = new Date().toDateString();
-    let time = new Date().toLocaleTimeString();
-    let serviceWithCharges = customer.service.map((eachServiceName) => {
-      return androidcontext.salon?.services.find(
-        (service) => service.name === eachServiceName
-      );
-    });
-
-    let customerPaid = serviceWithCharges.reduce((accumulte, service) => {
-      return accumulte + Number(service.charges);
-    }, 0);
-
-    let report = {
-      custName: customer.name,
-      custMobile: customer.mobile,
-      providerName: provider.fname + " " + provider.lname,
-      date: date,
-      time: time,
-      services: serviceWithCharges,
-      providerId: provider.id,
-      customerPaid: customerPaid,
-      addedBy: customer.addedBy,
-    };
-
-    let salonReportUpdatedArray = [report, ...androidcontext.salon.salonReport];
-
+  async function done() {
     const docRef = doc(db, "salon", androidcontext.salon.id);
+    try {
+      await runTransaction(db, async (transaction) => {
+        const thisDoc = await transaction.get(docRef);
+        if (!thisDoc.exists()) {
+          throw "Document does not exist!";
+        }
 
-    const payLoad = {
-      ...androidcontext.salon,
-      serviceproviders: newprovidersarray,
-      salonReport: salonReportUpdatedArray,
-    };
+        let newprovidersarray = thisDoc.data().serviceproviders.map((each) => {
+          if (each.id === provider.id) {
+            let time = new Date().getTime();
+            each.customers = each.customers.filter((cust, i) => i !== 0);
+            each.checkingTime = time + 1000 * 150;
+            each.customerResponded = false;
+            each.popUpTime = time + 1000 * 60;
+            return each;
+          } else {
+            return each;
+          }
+        });
 
-    setDoc(docRef, payLoad);
+        let date = new Date().toDateString();
+        let time = new Date().toLocaleTimeString();
+        let serviceWithCharges = customer.service.map((eachServiceName) => {
+          return thisDoc
+            .data()
+            ?.services.find((service) => service.name === eachServiceName);
+        });
+
+        let customerPaid = serviceWithCharges.reduce((accumulte, service) => {
+          return accumulte + Number(service.charges);
+        }, 0);
+
+        let report = {
+          custName: customer.name,
+          custMobile: customer.mobile,
+          providerName: provider.fname + " " + provider.lname,
+          date: date,
+          time: time,
+          services: serviceWithCharges,
+          providerId: provider.id,
+          customerPaid: customerPaid,
+          addedBy: customer.addedBy,
+        };
+
+        let salonReportUpdatedArray = [
+          report,
+          ...androidcontext.salon.salonReport,
+        ];
+
+        transaction.update(docRef, {
+          serviceproviders: newprovidersarray,
+          salonReport: salonReportUpdatedArray,
+        });
+      });
+    } catch (e) {
+      console.error("Something went wrong");
+    }
   }
 
   async function deleteCustomer() {
