@@ -215,22 +215,20 @@ const ProviderInfo = () => {
       : uploadfotoBeforeSaveChanges(setBackendDataAndSalon);
   }
 
-  function deleteProvider() {
-    let a = androidcontext.salon.serviceproviders.filter(
-      (each) => each.id !== provider.id
-    );
-
+  async function deleteProvider() {
     const docRef = doc(db, "salon", androidcontext.salon.id);
-    const payLoad = {
-      ...androidcontext.salon,
-      serviceproviders: a,
-    };
-    setDoc(docRef, payLoad)
-      .then(() => {
-        // console.log("Provider deleted Succefully");
-        // console.log(androidcontext.salon);
-      })
-      .catch((err) => console.log(err));
+    try {
+      await runTransaction(db, async (transaction) => {
+        const thisDoc = await transaction.get(docRef);
+        let a = thisDoc
+          .data()
+          .serviceproviders.filter((each) => each.id !== provider.id);
+        transaction.update(docRef, { serviceproviders: a });
+      });
+    } catch (e) {
+      console.error("something went wrong");
+    }
+
     addProvider();
   }
 
