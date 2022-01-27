@@ -1,5 +1,5 @@
 import { stringify } from "@firebase/util";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, runTransaction, setDoc } from "firebase/firestore";
 import React, { useContext, useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Button, Input } from "react-native-elements";
@@ -22,19 +22,24 @@ const ServicesSection = () => {
     setServiceIndex(i);
     setUpdatedService({ name: service.name, charges: service.charges });
   }
-  function ClickedOnDeleteService(i) {
+  async function ClickedOnDeleteService(i) {
     setAddingService(false);
+    const docRef = doc(db, "salon", androidcontext.salon.id);
+    try {
+      await runTransaction(db, async (transaction) => {
+        const thisDoc = await transaction.get(docRef);
+        if (!thisDoc.exists()) {
+          throw "document does not exist";
+        }
+        let newServicesarr = thisDoc
+          .data()
+          .services.filter((service, index) => index !== i);
 
-    androidcontext.setSalon((salon) => {
-      let newServicesarr = salon.services.filter(
-        (service, index) => index !== i
-      );
-
-      const docRef = doc(db, "salon", androidcontext.salon.id);
-      const payLoad = { ...androidcontext.salon, services: newServicesarr };
-      setDoc(docRef, payLoad);
-      return { ...salon, services: newServicesarr };
-    });
+        transaction.update(docRef, { services: newServicesarr });
+      });
+    } catch (e) {
+      console.error("something went wrong");
+    }
   }
   function ClickedOnAddService() {
     setAddingService(true);
@@ -48,24 +53,28 @@ const ServicesSection = () => {
     setServiceIndex(androidcontext.salon.services.length);
     setUpdatedService({ name: "", charges: "" });
   }
-  function ClickedOnSaveService(i, service) {
+  async function ClickedOnSaveService(i, service) {
     setAddingService(false);
-
-    androidcontext.setSalon((salon) => {
-      let newServicesArray = salon.services.map((service, index) => {
-        if (index === i) {
-          return updatedService;
-        } else {
-          return service;
+    const docRef = doc(db, "salon", androidcontext.salon.id);
+    try {
+      await runTransaction(db, async (transaction) => {
+        const thisDoc = await transaction.get(docRef);
+        if (!thisDoc.exists()) {
+          throw "doc does not exist";
         }
+        let newServicesArray = thisDoc.data().services.map((service, index) => {
+          if (index === i) {
+            return updatedService;
+          } else {
+            return service;
+          }
+        });
+        transaction.update(docRef, { services: newServicesArray });
       });
-      const docRef = doc(db, "salon", androidcontext.salon.id);
-      const payLoad = { ...androidcontext.salon, services: newServicesArray };
-      setDoc(docRef, payLoad);
-
-      return { ...salon, services: newServicesArray };
-    });
-    setServiceIndex(null);
+      setServiceIndex(null);
+    } catch (e) {
+      console.error("something went wrong");
+    }
   }
   function ClickedOnCancelUpdating() {
     setServiceIndex(null);
