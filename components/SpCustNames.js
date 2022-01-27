@@ -11,7 +11,7 @@ import {
 import { Button } from "react-native-elements";
 import colors from "../theme/colors";
 import AndroidContext from "./../context/AndroidContext";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, runTransaction } from "firebase/firestore";
 import { db } from "../firebaseAndroid";
 import { AntDesign } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
@@ -124,27 +124,35 @@ const SpCustNames = ({ customer, index, provider }) => {
     setDoc(docRef, payLoad);
   }
 
-  function deleteCustomer() {
-    androidcontext.setSalon(() => {
-      let updatedproviders = androidcontext.salon.serviceproviders.map(
-        (each) => {
+  async function deleteCustomer() {
+    const docRef = doc(db, "salon", androidcontext.salon.id);
+    try {
+      let newprovidersarray = await runTransaction(db, async (transaction) => {
+        let thisDoc = await transaction.get(docRef);
+        if (!thisDoc.exists()) {
+          throw "Document does not exist!";
+        }
+        let arr = androidcontext.salon.serviceproviders.map((each) => {
           if (each.id === provider.id) {
             let custArray = provider.customers.filter((cust, i) => i !== index);
             return { ...provider, customers: custArray };
           } else {
             return each;
           }
-        }
-      );
+        });
 
-      const docRef = doc(db, "salon", androidcontext.salon.id);
-      const payload = {
-        ...androidcontext.salon,
-        serviceproviders: updatedproviders,
-      };
-      setDoc(docRef, payload);
-      return { ...androidcontext.salon, serviceproviders: updatedproviders };
-    });
+        transaction.update(docRef, { serviceproviders: arr });
+
+        return arr;
+      });
+
+      androidcontext.setSalon((salon) => ({
+        ...salon,
+        serviceproviders: newprovidersarray,
+      }));
+    } catch (e) {
+      console.error("something went wrong");
+    }
   }
 
   const dialCall = () => {

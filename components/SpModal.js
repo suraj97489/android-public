@@ -14,7 +14,7 @@ import {
 import CheckBox from "expo-checkbox";
 import AndroidContext from "../context/AndroidContext";
 import { Button, Input } from "react-native-elements";
-import { doc, setDoc } from "firebase/firestore";
+import { doc, setDoc, runTransaction } from "firebase/firestore";
 import { db } from "../firebaseAndroid";
 
 import colors from "../theme/colors";
