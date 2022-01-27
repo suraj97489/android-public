@@ -1,4 +1,4 @@
-import { doc, setDoc } from "firebase/firestore";
+import { doc, runTransaction, setDoc } from "firebase/firestore";
 import React, { useState, useContext } from "react";
 import { StyleSheet, Text, View, Modal } from "react-native";
 import { Button } from "react-native-elements";
@@ -8,24 +8,27 @@ import AndroidContext from "./../context/AndroidContext";
 const ShopOnOffConfirm = () => {
   const androidcontext = useContext(AndroidContext);
 
-  function shopOpenCloseHandler(e) {
+  async function shopOpenCloseHandler(e) {
     closeshopOnOffModal();
     const docRef = doc(db, "salon", androidcontext.salon.id);
-    const payLoad = {
-      ...androidcontext.salon,
-      shopOpen: androidcontext.shopButtonText === "shop is open" ? false : true,
-    };
-    setDoc(docRef, payLoad)
-      .then(() => {
-        // closeshopOnOffModal();
-      })
-      .catch((err) => {
-        alert(err);
+    try {
+      await runTransaction(db, async (transaction) => {
+        const thisDoc = await transaction.get(docRef);
+        if (!thisDoc.exists()) {
+          throw "Document does not exist!";
+        }
+        transaction.update(docRef, {
+          shopOpen:
+            androidcontext.shopButtonText === "shop is open" ? false : true,
+        });
       });
-    if (androidcontext.shopButtonText === "shop is open") {
-      androidcontext.setShopButtonText("shop is closed");
-    } else {
-      androidcontext.setShopButtonText("shop is open");
+      if (androidcontext.shopButtonText === "shop is open") {
+        androidcontext.setShopButtonText("shop is closed");
+      } else {
+        androidcontext.setShopButtonText("shop is open");
+      }
+    } catch (e) {
+      console.error("something went wrong");
     }
   }
 
