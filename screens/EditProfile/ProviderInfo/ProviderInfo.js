@@ -178,31 +178,32 @@ const ProviderInfo = () => {
   async function saveChanges() {
     androidcontext.setButtonDisabled(true);
 
-    function setBackendDataAndSalon(url) {
-      androidcontext.setSalon((old) => {
-        let newProvidersArray = old.serviceproviders.map((each) => {
-          if (each.id === provider.id) {
-            return {
-              ...provider,
-
-              providerPhoto: url ? url : provider.providerPhoto,
-            };
-          } else {
-            return each;
+    async function setBackendDataAndSalon(url) {
+      const docRef = doc(db, "salon", androidcontext.salon.id);
+      try {
+        await runTransaction(db, async (transaction) => {
+          const thisDoc = await transaction.get(docRef);
+          if (!thisDoc.exists()) {
+            throw "Document does not exist!";
           }
+          let newProvidersArray = thisDoc
+            .data()
+            .serviceproviders.map((each) => {
+              if (each.id === provider.id) {
+                return {
+                  ...provider,
+
+                  providerPhoto: url ? url : provider.providerPhoto,
+                };
+              } else {
+                return each;
+              }
+            });
+          transaction.update(docRef, { serviceproviders: newProvidersArray });
         });
-        const docRef = doc(db, "salon", androidcontext.salon.id);
-        const payLoad = {
-          ...androidcontext.salon,
-          serviceproviders: newProvidersArray,
-        };
-        setDoc(docRef, payLoad)
-          .then(() => {
-            console.log("Provider Updated Succefully");
-          })
-          .catch((err) => console.log(err));
-        return { ...androidcontext.salon, serviceproviders: newProvidersArray };
-      });
+      } catch (e) {
+        console.error("something went wrong");
+      }
     }
 
     let notUploaded = androidcontext.salon.serviceproviders.some(
