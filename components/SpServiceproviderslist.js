@@ -5,17 +5,6 @@ import ProviderBefore from "./ProviderBefore";
 import AndroidContext from "./../context/AndroidContext";
 
 const SpServiceproviderslist = ({ provider, index }) => {
-  const androidcontext = useContext(AndroidContext);
-
-  useEffect(() => {
-    androidcontext.setSalonProvidersfordisplay(
-      androidcontext.salon.serviceproviders.map((provider) => ({
-        ...provider,
-        display: "none",
-      }))
-    );
-  }, []);
-
   return (
     <View style={styles.providerAll}>
       <ProviderBefore provider={provider} />

@@ -1,5 +1,5 @@
 import React from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { StyleSheet } from "react-native";
 import SalonpageTwoBodyBottom from "./SalonpageTwoBodyBottom";
 import SalonpageTwoBodyTop from "./SalonpageTwoBodyTop";
 

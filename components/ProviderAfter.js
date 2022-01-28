@@ -1,6 +1,6 @@
 import React, { useContext } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
-import { Button } from "react-native-elements";
+
 import AndroidContext from "../context/AndroidContext";
 import ModalContext from "../context/ModalContext";
 import colors from "../theme/colors";
@@ -9,6 +9,12 @@ import SpCustNames from "./SpCustNames";
 const ProviderAfter = ({ provider, index }) => {
   const modalcontext = useContext(ModalContext);
   const androidcontext = useContext(AndroidContext);
+  const clickedOnAddCustomer = () => {
+    androidcontext.setProviderId(provider.id);
+    androidcontext.setAddingcustomer(true);
+    androidcontext.setModalVisible(true);
+    modalcontext.resetSpModaldata();
+  };
 
   return (
     <View
@@ -33,15 +39,7 @@ const ProviderAfter = ({ provider, index }) => {
         />
       ))}
 
-      <Pressable
-        style={styles.addCustomer}
-        onPress={() => {
-          androidcontext.setProviderId(provider.id);
-          androidcontext.setAddingcustomer(true);
-          androidcontext.setModalVisible(true);
-          modalcontext.resetSpModaldata();
-        }}
-      >
+      <Pressable style={styles.addCustomer} onPress={clickedOnAddCustomer}>
         <Text style={{ fontWeight: "bold" }}>ADD CUSTOMER</Text>
       </Pressable>
     </View>

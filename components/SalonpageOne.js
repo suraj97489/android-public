@@ -1,5 +1,5 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Image } from "react-native-elements";
 import AndroidContext from "../context/AndroidContext";
@@ -7,6 +7,15 @@ import colors from "../theme/colors";
 
 const SalonpageOne = () => {
   const androidcontext = useContext(AndroidContext);
+
+  useEffect(() => {
+    androidcontext.setSalonProvidersfordisplay(
+      androidcontext.salon.serviceproviders.map((provider) => ({
+        ...provider,
+        display: "none",
+      }))
+    );
+  }, []);
   return (
     <>
       <View
