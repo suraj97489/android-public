@@ -3,7 +3,7 @@ import AndroidContext from "./AndroidContext";
 // import { StyleSheet, Text, View } from "react-native";
 import { useState, useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth, db } from "../firebaseAndroid";
+import { db } from "../firebaseAndroid";
 import { collection, onSnapshot } from "firebase/firestore";
 
 import { getDocs } from "firebase/firestore";

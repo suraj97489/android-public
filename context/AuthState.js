@@ -1,10 +1,10 @@
 import AuthContext from "./AuthContext";
 
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import AndroidContext from "./AndroidContext";
 import { collection, getDocs } from "firebase/firestore";
-import { db } from "../firebaseAndroid";
+import { auth, db } from "../firebaseAndroid";
 
 function AuthState(props) {
   const { salon, setSalon, setShopButtonText } = useContext(AndroidContext);
@@ -49,9 +49,9 @@ function AuthState(props) {
   }, []);
   const [customer, setCustomer] = useState();
   return (
-    <AuthContext.Provider
-      value={{ customer, setCustomer }}
-    ></AuthContext.Provider>
+    <AuthContext.Provider value={{ customer, setCustomer }}>
+      {props.children}
+    </AuthContext.Provider>
   );
 }
 

@@ -28,7 +28,7 @@ const Login = (props) => {
       .then((userCredential) => {
         props.navigation.navigate("Home");
         const user = userCredential.user;
-        androidcontext.setCustomer(user);
+        authcontext.setCustomer(user);
         async function updateSalon() {
           const Snapshot = await getDocs(collection(db, "salon"));
           Snapshot.docs.map((doc) => {
