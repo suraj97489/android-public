@@ -9,9 +9,11 @@ import { EvilIcons } from "@expo/vector-icons";
 import SpModal from "../components/SpModal";
 import ShopOnOffConfirm from "../components/ShopOnOffConfirm";
 import SpinnerScreen from "../components/SpinnerScreen";
+import AuthContext from "../context/AuthContext";
 
 const SpHome = (props) => {
   const androidcontext = useContext(AndroidContext);
+  const authcontext = useContext(AuthContext);
 
   useEffect(() => {
     let cancel = false;
@@ -29,7 +31,7 @@ const SpHome = (props) => {
     };
   }, [androidcontext.salon]);
 
-  if (androidcontext.salon?.salonUsername === androidcontext.customer?.email) {
+  if (androidcontext.salon?.salonUsername === authcontext.customer?.email) {
     return (
       <>
         <ScrollView>

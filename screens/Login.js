@@ -9,9 +9,11 @@ import AndroidContext from "./../context/AndroidContext";
 
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebaseAndroid";
+import AuthContext from "../context/AuthContext";
 
 const Login = (props) => {
   const androidcontext = useContext(AndroidContext);
+  const authcontext = useContext(AuthContext);
   const [LoginDetails, setLoginDetails] = useState({
     salonUsername: "",
     salonPassword: "",
@@ -41,11 +43,11 @@ const Login = (props) => {
         alert(err);
       });
   };
-  if (androidcontext.customer) {
+  if (authcontext.customer) {
     props.navigation.navigate("Home");
   }
 
-  if (!androidcontext.customer) {
+  if (!authcontext.customer) {
     return (
       <View style={styles.LoginContainer}>
         <StatusBar style="light" />

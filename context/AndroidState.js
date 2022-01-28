@@ -11,7 +11,7 @@ import { getDocs } from "firebase/firestore";
 const AndroidState = (props) => {
   const [salonProvidersfordisplay, setSalonProvidersfordisplay] = useState([]);
   const [salon, setSalon] = useState();
-  const [customer, setCustomer] = useState();
+
   const [modalVisible, setModalVisible] = useState(false);
   const [notify, setNotify] = useState();
 
@@ -32,47 +32,6 @@ const AndroidState = (props) => {
 
   // not in website
   const [shopOnOffModal, setShopOnOffModal] = useState(false);
-
-  useEffect(() => {
-    let cancel = false;
-
-    async function updateSalon() {
-      if (cancel) return;
-      if (customer && salon === undefined) {
-        const Snapshot = await getDocs(collection(db, "salon"));
-
-        Snapshot.docs.map((doc) => {
-          if (doc.data().salonUsername === customer.email) {
-            setSalon({ ...doc.data(), id: doc.id });
-            setShopButtonText(() => {
-              if (doc.data().shopOpen) {
-                return "shop is open";
-              } else {
-                return "shop is closed";
-              }
-            });
-          }
-        });
-      }
-    }
-    updateSalon();
-
-    return () => {
-      cancel = true;
-    };
-  }, [customer]);
-
-  useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (user) => {
-      if (user) {
-        setCustomer(user);
-      } else {
-        setCustomer();
-      }
-    });
-
-    return unsubscribe;
-  }, []);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, "salon"), (snapshot) => {
@@ -107,8 +66,7 @@ const AndroidState = (props) => {
         setSalonProvidersfordisplay,
         salon,
         setSalon,
-        customer,
-        setCustomer,
+
         modalVisible,
         setModalVisible,
         services,

@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
 import ContactUs from "./ContactUs";
@@ -8,8 +8,9 @@ import Login from "./Login";
 import Report from "./Report";
 import SpHome from "./SpHome";
 import EditProfile from "./EditProfile/EditProfile";
-import AndroidContext from "../context/AndroidContext";
+
 import colors from "../theme/colors";
+import AuthContext from "../context/AuthContext";
 
 const Drawer = createDrawerNavigator();
 const globalScreenOptions = {
@@ -22,7 +23,7 @@ const globalScreenOptions = {
 };
 
 const AllRoutes = () => {
-  const androidcontext = useContext(AndroidContext);
+  const authcontext = useContext(AuthContext);
 
   return (
     <NavigationContainer>
@@ -30,7 +31,7 @@ const AllRoutes = () => {
         initialRouteName="Login"
         screenOptions={globalScreenOptions}
       >
-        {androidcontext.customer ? (
+        {authcontext.customer ? (
           <>
             <Drawer.Screen name="Home" component={SpHome} />
             <Drawer.Screen name="Edit Profile" component={EditProfile} />

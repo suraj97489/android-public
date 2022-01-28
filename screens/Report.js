@@ -4,9 +4,11 @@ import { StatusBar } from "expo-status-bar";
 import AndroidContext from "./../context/AndroidContext";
 import { Input } from "react-native-elements";
 import SpinnerScreen from "../components/SpinnerScreen";
+import AuthContext from "../context/AuthContext";
 
 const Report = () => {
   const androidcontext = useContext(AndroidContext);
+  const authcontext = useContext(AuthContext);
   let report = androidcontext.salon?.salonReport;
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -31,7 +33,7 @@ const Report = () => {
       return item;
     }
   });
-  if (androidcontext.salon?.salonUsername === androidcontext.customer?.email) {
+  if (androidcontext.salon?.salonUsername === authcontext.customer?.email) {
     return (
       <>
         <StatusBar style="auto" />

@@ -6,11 +6,14 @@ import "react-native-gesture-handler";
 
 import AllRoutes from "./screens/AllRoutes";
 import "expo-dev-client";
+import AuthState from "./context/AuthState";
 
 const App = () => {
   return (
     <AndroidState>
-      <AllRoutes />
+      <AuthState>
+        <AllRoutes />
+      </AuthState>
     </AndroidState>
   );
 };
