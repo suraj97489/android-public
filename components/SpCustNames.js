@@ -15,8 +15,10 @@ import { doc, setDoc, runTransaction } from "firebase/firestore";
 import { db } from "../firebaseAndroid";
 import { AntDesign } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
+import ModalContext from "../context/ModalContext";
 
 const SpCustNames = ({ customer, index, provider }) => {
+  const modalcontext = useContext(ModalContext);
   const [custDisplay, setCustDisplay] = useState("none");
   const androidcontext = useContext(AndroidContext);
   const [sortButton, setSortButton] = useState(false);
@@ -70,7 +72,7 @@ const SpCustNames = ({ customer, index, provider }) => {
     androidcontext.setAddingcustomer(false);
     androidcontext.setModalVisible(true);
     androidcontext.setCustIndex(index);
-    androidcontext.resetSpModaldata();
+    modalcontext.resetSpModaldata();
   }
   async function done() {
     const docRef = doc(db, "salon", androidcontext.salon.id);

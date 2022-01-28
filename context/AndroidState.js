@@ -1,6 +1,5 @@
 import AndroidContext from "./AndroidContext";
 
-// import { StyleSheet, Text, View } from "react-native";
 import { useState, useEffect } from "react";
 import { onAuthStateChanged } from "firebase/auth";
 import { db } from "../firebaseAndroid";
@@ -15,15 +14,11 @@ const AndroidState = (props) => {
   const [modalVisible, setModalVisible] = useState(false);
   const [notify, setNotify] = useState();
 
-  const [customerName, setCustomerName] = useState("");
-  const [customerMobile, setCustomerMobile] = useState("");
   const [addingcustomer, setAddingcustomer] = useState(true);
+  const [custIndex, setCustIndex] = useState();
+
   const [providerId, setProviderId] = useState();
 
-  const [services, setServices] = useState();
-  const [selectedServices, setSelectedServices] = useState([]);
-
-  const [custIndex, setCustIndex] = useState();
   // const [salonUsername, setSalonUsername] = useState("username");
   const [buttonDisabled, setButtonDisabled] = useState(true);
   // const [alertProvider, setAlertProvider] = useState(false);
@@ -48,16 +43,6 @@ const AndroidState = (props) => {
 
     return unsubscribe;
   }, []);
-  function resetSpModaldata() {
-    let updatedServices = services.map((service) => ({
-      ...service,
-      checked: false,
-    }));
-    setServices(updatedServices);
-    setCustomerMobile("");
-    setCustomerName("");
-    setSelectedServices([]);
-  }
 
   return (
     <AndroidContext.Provider
@@ -69,21 +54,15 @@ const AndroidState = (props) => {
 
         modalVisible,
         setModalVisible,
-        services,
-        setServices,
+
         addingcustomer,
         setAddingcustomer,
-        customerMobile,
-        setCustomerMobile,
-        customerName,
-        setCustomerName,
+
         providerId,
         setProviderId,
-        selectedServices,
-        setSelectedServices,
         custIndex,
         setCustIndex,
-        resetSpModaldata,
+
         shopButtonText,
         setShopButtonText,
         buttonDisabled,

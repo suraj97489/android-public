@@ -18,12 +18,14 @@ import { doc, setDoc, runTransaction } from "firebase/firestore";
 import { db } from "../firebaseAndroid";
 
 import colors from "../theme/colors";
+import ModalContext from "../context/ModalContext";
 
 const SpModal = () => {
   const androidcontext = useContext(AndroidContext);
+  const modalcontext = useContext(ModalContext);
 
   function updateCheckedValue(index) {
-    let updatedServicesArray = androidcontext.services.map((service, i) => {
+    let updatedServicesArray = modalcontext.services.map((service, i) => {
       if (i === index) {
         service.checked = !service.checked;
         return service;
@@ -31,12 +33,12 @@ const SpModal = () => {
         return service;
       }
     });
-    androidcontext.setSelectedServices(() => {
+    modalcontext.setSelectedServices(() => {
       return updatedServicesArray
         .filter((service) => service.checked === true)
         .map((service) => service.name);
     });
-    androidcontext.setServices(updatedServicesArray);
+    modalcontext.setServices(updatedServicesArray);
   }
 
   async function addOrEditCustomer() {
@@ -59,9 +61,9 @@ const SpModal = () => {
               if (provider.id === androidcontext.providerId) {
                 provider.customers.push({
                   email: "",
-                  mobile: androidcontext.customerMobile,
-                  name: androidcontext.customerName,
-                  service: androidcontext.selectedServices,
+                  mobile: modalcontext.customerMobile,
+                  name: modalcontext.customerName,
+                  service: modalcontext.selectedServices,
                   checkStatus: false,
                   addedBy: "provider",
                 });
@@ -81,7 +83,7 @@ const SpModal = () => {
                 provider.customers = provider.customers.map(
                   (eachcust, index) => {
                     if (index === androidcontext.custIndex) {
-                      eachcust.service = androidcontext.selectedServices;
+                      eachcust.service = modalcontext.selectedServices;
                       return eachcust;
                     } else {
                       return eachcust;
@@ -131,20 +133,20 @@ const SpModal = () => {
                 placeholder="Customer's Name"
                 type="text"
                 autoFocus
-                value={androidcontext.customerName}
-                onChangeText={(text) => androidcontext.setCustomerName(text)}
+                value={modalcontext.customerName}
+                onChangeText={(text) => modalcontext.setCustomerName(text)}
               />
               <Text> Mobile</Text>
               <Input
                 placeholder="Customer's Mobile(optional)"
                 keyboardType="numeric"
-                value={androidcontext.customerMobile}
-                onChangeText={(text) => androidcontext.setCustomerMobile(text)}
+                value={modalcontext.customerMobile}
+                onChangeText={(text) => modalcontext.setCustomerMobile(text)}
               />
             </View>
           )}
           <ScrollView style={{ width: "100%", height: 150 }}>
-            {androidcontext.services?.map((service, i) => (
+            {modalcontext.services?.map((service, i) => (
               <View key={i} style={styles.serviceContainer}>
                 <CheckBox
                   value={service.checked}
@@ -165,9 +167,9 @@ const SpModal = () => {
             onPress={addOrEditCustomer}
             disabled={
               androidcontext.addingcustomer
-                ? androidcontext.customerName.length === 0 ||
-                  androidcontext.selectedServices.length === 0
-                : androidcontext.selectedServices.length === 0
+                ? modalcontext.customerName.length === 0 ||
+                  modalcontext.selectedServices.length === 0
+                : modalcontext.selectedServices.length === 0
             }
             title="Submit"
           >

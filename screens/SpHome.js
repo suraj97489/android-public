@@ -10,9 +10,11 @@ import SpModal from "../components/SpModal";
 import ShopOnOffConfirm from "../components/ShopOnOffConfirm";
 import SpinnerScreen from "../components/SpinnerScreen";
 import AuthContext from "../context/AuthContext";
+import ModalContext from "../context/ModalContext";
 
 const SpHome = (props) => {
   const androidcontext = useContext(AndroidContext);
+  const modalcontext = useContext(ModalContext);
   const authcontext = useContext(AuthContext);
 
   useEffect(() => {
@@ -24,7 +26,7 @@ const SpHome = (props) => {
         checked: false,
       }));
 
-      androidcontext.setServices(updatedServices);
+      modalcontext.setServices(updatedServices);
     }
     return () => {
       cancel = true;
