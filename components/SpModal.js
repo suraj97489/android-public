@@ -14,15 +14,17 @@ import {
 import CheckBox from "expo-checkbox";
 import AndroidContext from "../context/AndroidContext";
 import { Button, Input } from "react-native-elements";
-import { doc, setDoc, runTransaction } from "firebase/firestore";
+import { doc, runTransaction } from "firebase/firestore";
 import { db } from "../firebaseAndroid";
 
 import colors from "../theme/colors";
 import ModalContext from "../context/ModalContext";
+import SalonContext from "../context/SalonContext";
 
 const SpModal = () => {
   const androidcontext = useContext(AndroidContext);
   const modalcontext = useContext(ModalContext);
+  const saloncontext = useContext(SalonContext);
 
   function updateCheckedValue(index) {
     let updatedServicesArray = modalcontext.services.map((service, i) => {
@@ -43,7 +45,7 @@ const SpModal = () => {
 
   async function addOrEditCustomer() {
     androidcontext.setModalVisible(!androidcontext.modalVisible);
-    const docRef = doc(db, "salon", androidcontext.salon.id);
+    const docRef = doc(db, "salon", saloncontext.salon.id);
     try {
       let newprovidersarray;
 
@@ -100,7 +102,7 @@ const SpModal = () => {
         }
       });
 
-      androidcontext.setSalon((salon) => ({
+      saloncontext.setSalon((salon) => ({
         ...salon,
         serviceproviders: newprovidersarray,
       }));

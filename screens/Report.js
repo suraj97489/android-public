@@ -1,15 +1,16 @@
 import React, { useContext, useState } from "react";
 import { StyleSheet, Text, View, FlatList } from "react-native";
 import { StatusBar } from "expo-status-bar";
-import AndroidContext from "./../context/AndroidContext";
+
 import { Input } from "react-native-elements";
 import SpinnerScreen from "../components/SpinnerScreen";
 import AuthContext from "../context/AuthContext";
+import SalonContext from "../context/SalonContext";
 
 const Report = () => {
-  const androidcontext = useContext(AndroidContext);
   const authcontext = useContext(AuthContext);
-  let report = androidcontext.salon?.salonReport;
+  const saloncontext = useContext(SalonContext);
+  let report = saloncontext.salon?.salonReport;
   const [searchTerm, setSearchTerm] = useState("");
 
   let filteredItems = report?.filter((item) => {
@@ -33,7 +34,7 @@ const Report = () => {
       return item;
     }
   });
-  if (androidcontext.salon?.salonUsername === authcontext.customer?.email) {
+  if (saloncontext.salon?.salonUsername === authcontext.customer?.email) {
     return (
       <>
         <StatusBar style="auto" />

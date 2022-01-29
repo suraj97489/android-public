@@ -3,25 +3,24 @@ import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import SalonpageOne from "../components/SalonpageOne";
 import SalonpageTwo from "../components/SalonpageTwo";
-import AndroidContext from "./../context/AndroidContext";
-import { EvilIcons } from "@expo/vector-icons";
 
 import SpModal from "../components/SpModal";
 import ShopOnOffConfirm from "../components/ShopOnOffConfirm";
 import SpinnerScreen from "../components/SpinnerScreen";
 import AuthContext from "../context/AuthContext";
 import ModalContext from "../context/ModalContext";
+import SalonContext from "../context/SalonContext";
 
 const SpHome = (props) => {
-  const androidcontext = useContext(AndroidContext);
+  const saloncontext = useContext(SalonContext);
   const modalcontext = useContext(ModalContext);
   const authcontext = useContext(AuthContext);
 
   useEffect(() => {
     let cancel = false;
     if (cancel) return;
-    if (androidcontext.salon) {
-      let updatedServices = androidcontext.salon.services.map((service) => ({
+    if (saloncontext.salon) {
+      let updatedServices = saloncontext.salon.services.map((service) => ({
         ...service,
         checked: false,
       }));
@@ -31,9 +30,9 @@ const SpHome = (props) => {
     return () => {
       cancel = true;
     };
-  }, [androidcontext.salon]);
+  }, [saloncontext.salon]);
 
-  if (androidcontext.salon?.salonUsername === authcontext.customer?.email) {
+  if (saloncontext.salon?.salonUsername === authcontext.customer?.email) {
     return (
       <>
         <ScrollView>

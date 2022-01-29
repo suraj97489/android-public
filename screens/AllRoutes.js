@@ -36,7 +36,6 @@ const AllRoutes = () => {
             <Drawer.Screen name="Home" component={SpHome} />
             <Drawer.Screen name="Edit Profile" component={EditProfile} />
             <Drawer.Screen name="Report" component={Report} />
-            {/* <Drawer.Screen name="Login" component={Login} /> */}
           </>
         ) : (
           <Drawer.Screen name="Login" component={Login} />

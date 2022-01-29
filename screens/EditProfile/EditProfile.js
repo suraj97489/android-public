@@ -10,11 +10,13 @@ import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 import AndroidContext from "../../context/AndroidContext";
 import SpinnerScreen from "../../components/SpinnerScreen";
 import AuthContext from "../../context/AuthContext";
+import SalonContext from "../../context/SalonContext";
 
 const EditProfile = () => {
   const [buttonText, setButtonText] = useState("Salon Info");
   const androidcontext = useContext(AndroidContext);
   const authcontext = useContext(AuthContext);
+  const saloncontext = useContext(SalonContext);
 
   function returnComponent() {
     if (buttonText === "Salon Info") {
@@ -42,7 +44,7 @@ const EditProfile = () => {
     borderWidth: buttonText === "Services" ? 2 : 0,
   };
 
-  if (androidcontext.salon?.salonUsername === authcontext.customer?.email) {
+  if (saloncontext.salon?.salonUsername === authcontext.customer?.email) {
     return (
       <ScrollView>
         <StatusBar style="auto" />
@@ -98,7 +100,7 @@ const EditProfile = () => {
             </Text>
           </TouchableWithoutFeedback>
         </View>
-        {androidcontext.salon ? returnComponent() : <Text>Loading...</Text>}
+        {saloncontext.salon ? returnComponent() : <Text>Loading...</Text>}
       </ScrollView>
     );
   } else {

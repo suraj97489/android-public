@@ -1,10 +1,11 @@
 import React, { useContext } from "react";
 import { StyleSheet, View } from "react-native";
-import AndroidContext from "../context/AndroidContext";
+
+import SalonContext from "../context/SalonContext";
 import SpServiceproviderslist from "./SpServiceproviderslist";
 
 const SalonpageTwoBodyBottom = () => {
-  const androidcontext = useContext(AndroidContext);
+  const saloncontext = useContext(SalonContext);
 
   return (
     <View
@@ -15,8 +16,8 @@ const SalonpageTwoBodyBottom = () => {
         marginBottom: 50,
       }}
     >
-      {androidcontext.salon &&
-        androidcontext.salon.serviceproviders.map((provider, i) => (
+      {saloncontext.salon &&
+        saloncontext.salon.serviceproviders.map((provider, i) => (
           <SpServiceproviderslist key={i} provider={provider} index={i} />
         ))}
     </View>

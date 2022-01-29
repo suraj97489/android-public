@@ -3,14 +3,15 @@ import React, { useContext, useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Image } from "react-native-elements";
 import AndroidContext from "../context/AndroidContext";
+import SalonContext from "../context/SalonContext";
 import colors from "../theme/colors";
 
 const SalonpageOne = () => {
-  const androidcontext = useContext(AndroidContext);
+  const saloncontext = useContext(SalonContext);
 
   useEffect(() => {
-    androidcontext.setSalonProvidersfordisplay(
-      androidcontext.salon.serviceproviders.map((provider) => ({
+    saloncontext.setSalonProvidersfordisplay(
+      saloncontext.salon.serviceproviders.map((provider) => ({
         ...provider,
         display: "none",
       }))
@@ -29,7 +30,7 @@ const SalonpageOne = () => {
         <Image
           source={{
             uri:
-              androidcontext.salon?.salonPhoto ||
+              saloncontext.salon?.salonPhoto ||
               "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8YmVhdXR5JTIwc2Fsb258ZW58MHx8MHx8&w=1000&q=80",
           }}
           style={{ width: 100, height: 100 }}
@@ -42,16 +43,16 @@ const SalonpageOne = () => {
               fontWeight: "bold",
             }}
           >
-            {androidcontext.salon?.salonName || "salon name"}
+            {saloncontext.salon?.salonName || "salon name"}
           </Text>
           <View style={{ width: "70%" }}>
-            <Text style={styles.address}>{androidcontext.salon?.address}</Text>
+            <Text style={styles.address}>{saloncontext.salon?.address}</Text>
           </View>
         </View>
       </View>
       <View style={styles.bottomstrip}>
         <Text style={{ fontWeight: "bold" }}>website :</Text>
-        <Text>{androidcontext.salon?.website}</Text>
+        <Text>{saloncontext.salon?.website}</Text>
       </View>
     </>
   );

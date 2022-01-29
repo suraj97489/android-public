@@ -7,9 +7,10 @@ import AndroidContext from "../context/AndroidContext";
 import { db } from "../firebaseAndroid";
 import colors from "../theme/colors";
 import { AntDesign } from "@expo/vector-icons";
+import SalonContext from "../context/SalonContext";
 
 const ProviderBefore = ({ provider }) => {
-  const androidcontext = useContext(AndroidContext);
+  const saloncontext = useContext(SalonContext);
   const [bookingOn, setBookingOn] = useState(false);
 
   useEffect(() => {
@@ -26,7 +27,7 @@ const ProviderBefore = ({ provider }) => {
   }, [bookingOn, provider]);
 
   async function bookingHandler() {
-    const docRef = doc(db, "salon", androidcontext.salon.id);
+    const docRef = doc(db, "salon", saloncontext.salon.id);
     try {
       await runTransaction(db, async (transaction) => {
         const thisDoc = await transaction.get(docRef);
@@ -52,7 +53,7 @@ const ProviderBefore = ({ provider }) => {
   }
 
   const providerDropDown = () => {
-    androidcontext.setSalonProvidersfordisplay((old) => {
+    saloncontext.setSalonProvidersfordisplay((old) => {
       if (old) {
         return old.map((each) => {
           if (each.id === provider.id) {
@@ -67,7 +68,7 @@ const ProviderBefore = ({ provider }) => {
           }
         });
       } else {
-        return androidcontext.salon.serviceproviders.map((each) => {
+        return saloncontext.salon.serviceproviders.map((each) => {
           if (each.id === provider.id) {
             if (each.display === "none") {
               return { ...each, display: "flex" };

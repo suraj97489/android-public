@@ -1,15 +1,14 @@
-import { stringify } from "@firebase/util";
-import { doc, runTransaction, setDoc } from "firebase/firestore";
-import React, { useContext, useEffect, useState } from "react";
+import { doc, runTransaction } from "firebase/firestore";
+import React, { useContext, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Button, Input } from "react-native-elements";
-import AndroidContext from "../../../context/AndroidContext";
+
+import SalonContext from "../../../context/SalonContext";
 import { db } from "../../../firebaseAndroid";
 import colors from "../../../theme/colors";
 
 const ServicesSection = () => {
-  const androidcontext = useContext(AndroidContext);
-
+  const saloncontext = useContext(SalonContext);
   const [serviceIndex, setServiceIndex] = useState();
   const [updatedService, setUpdatedService] = useState({
     name: "",
@@ -24,7 +23,7 @@ const ServicesSection = () => {
   }
   async function ClickedOnDeleteService(i) {
     setAddingService(false);
-    const docRef = doc(db, "salon", androidcontext.salon.id);
+    const docRef = doc(db, "salon", saloncontext.salon.id);
     try {
       await runTransaction(db, async (transaction) => {
         const thisDoc = await transaction.get(docRef);
@@ -43,26 +42,26 @@ const ServicesSection = () => {
   }
   function ClickedOnAddService() {
     setAddingService(true);
-    androidcontext.setSalon((salon) => {
+    saloncontext.setSalon((salon) => {
       return {
         ...salon,
         services: [...salon.services, { name: "", charges: "" }],
       };
     });
 
-    setServiceIndex(androidcontext.salon.services.length);
+    setServiceIndex(saloncontext.salon.services.length);
     setUpdatedService({ name: "", charges: "" });
   }
   async function ClickedOnSaveService(i, service) {
     setAddingService(false);
-    const docRef = doc(db, "salon", androidcontext.salon.id);
+    const docRef = doc(db, "salon", saloncontext.salon.id);
     try {
       await runTransaction(db, async (transaction) => {
         const thisDoc = await transaction.get(docRef);
         if (!thisDoc.exists()) {
           throw "doc does not exist";
         }
-        let newServicesArray = androidcontext.salon.services.map(
+        let newServicesArray = saloncontext.salon.services.map(
           (service, index) => {
             if (index === i) {
               return updatedService;
@@ -81,13 +80,13 @@ const ServicesSection = () => {
   function ClickedOnCancelUpdating() {
     setServiceIndex(null);
     if (addingService) {
-      androidcontext.salon.services.pop();
+      saloncontext.salon.services.pop();
       setAddingService(false);
     }
   }
   return (
     <View style={styles.ServicesSection}>
-      {androidcontext.salon?.services.map((service, i) => (
+      {saloncontext.salon?.services.map((service, i) => (
         <View
           key={i}
           style={[

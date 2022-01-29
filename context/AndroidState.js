@@ -1,16 +1,8 @@
 import AndroidContext from "./AndroidContext";
 
-import { useState, useEffect } from "react";
-import { onAuthStateChanged } from "firebase/auth";
-import { db } from "../firebaseAndroid";
-import { collection, onSnapshot } from "firebase/firestore";
-
-import { getDocs } from "firebase/firestore";
+import { useState } from "react";
 
 const AndroidState = (props) => {
-  const [salonProvidersfordisplay, setSalonProvidersfordisplay] = useState([]);
-  const [salon, setSalon] = useState();
-
   const [modalVisible, setModalVisible] = useState(false);
   const [notify, setNotify] = useState();
 
@@ -28,30 +20,9 @@ const AndroidState = (props) => {
   // not in website
   const [shopOnOffModal, setShopOnOffModal] = useState(false);
 
-  useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, "salon"), (snapshot) => {
-      snapshot.docs.map((doc) => {
-        setSalon((old) => {
-          if (doc.data().salonUsername === old?.salonUsername) {
-            return { ...doc.data(), id: doc.id };
-          } else {
-            return old;
-          }
-        });
-      });
-    });
-
-    return unsubscribe;
-  }, []);
-
   return (
     <AndroidContext.Provider
       value={{
-        salonProvidersfordisplay,
-        setSalonProvidersfordisplay,
-        salon,
-        setSalon,
-
         modalVisible,
         setModalVisible,
 

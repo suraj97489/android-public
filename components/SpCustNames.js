@@ -16,13 +16,15 @@ import { db } from "../firebaseAndroid";
 import { AntDesign } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import ModalContext from "../context/ModalContext";
+import SalonContext from "../context/SalonContext";
 
 const SpCustNames = ({ customer, index, provider }) => {
   const modalcontext = useContext(ModalContext);
-  const [custDisplay, setCustDisplay] = useState("none");
   const androidcontext = useContext(AndroidContext);
+  const saloncontext = useContext(SalonContext);
   const [sortButton, setSortButton] = useState(false);
 
+  const [custDisplay, setCustDisplay] = useState("none");
   useEffect(() => {
     let cancel = false;
     if (cancel) return;
@@ -38,7 +40,7 @@ const SpCustNames = ({ customer, index, provider }) => {
 
   async function sortingHandler() {
     setSortButton(false);
-    const docRef = doc(db, "salon", androidcontext.salon.id);
+    const docRef = doc(db, "salon", saloncontext.salon.id);
     try {
       await runTransaction(db, async (transaction) => {
         const thisDoc = await transaction.get(docRef);
@@ -75,7 +77,7 @@ const SpCustNames = ({ customer, index, provider }) => {
     modalcontext.resetSpModaldata();
   }
   async function done() {
-    const docRef = doc(db, "salon", androidcontext.salon.id);
+    const docRef = doc(db, "salon", saloncontext.salon.id);
     try {
       await runTransaction(db, async (transaction) => {
         const thisDoc = await transaction.get(docRef);
@@ -122,7 +124,7 @@ const SpCustNames = ({ customer, index, provider }) => {
 
         let salonReportUpdatedArray = [
           report,
-          ...androidcontext.salon.salonReport,
+          ...saloncontext.salon.salonReport,
         ];
 
         transaction.update(docRef, {
@@ -136,14 +138,14 @@ const SpCustNames = ({ customer, index, provider }) => {
   }
 
   async function deleteCustomer() {
-    const docRef = doc(db, "salon", androidcontext.salon.id);
+    const docRef = doc(db, "salon", saloncontext.salon.id);
     try {
       let newprovidersarray = await runTransaction(db, async (transaction) => {
         let thisDoc = await transaction.get(docRef);
         if (!thisDoc.exists()) {
           throw "Document does not exist!";
         }
-        let arr = androidcontext.salon.serviceproviders.map((each) => {
+        let arr = saloncontext.salon.serviceproviders.map((each) => {
           if (each.id === provider.id) {
             let custArray = provider.customers.filter((cust, i) => i !== index);
             return { ...provider, customers: custArray };
@@ -157,7 +159,7 @@ const SpCustNames = ({ customer, index, provider }) => {
         return arr;
       });
 
-      androidcontext.setSalon((salon) => ({
+      saloncontext.setSalon((salon) => ({
         ...salon,
         serviceproviders: newprovidersarray,
       }));

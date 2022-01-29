@@ -1,18 +1,18 @@
 import React, { useContext, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
-import { Button, Image, Input } from "react-native-elements";
+import { Button, Input } from "react-native-elements";
 import { signInWithEmailAndPassword } from "firebase/auth";
-import colors from "../theme/colors";
+
 import { auth } from "../firebaseAndroid";
-import AndroidContext from "./../context/AndroidContext";
 
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebaseAndroid";
 import AuthContext from "../context/AuthContext";
+import SalonContext from "../context/SalonContext";
 
 const Login = (props) => {
-  const androidcontext = useContext(AndroidContext);
+  const saloncontext = useContext(SalonContext);
   const authcontext = useContext(AuthContext);
   const [LoginDetails, setLoginDetails] = useState({
     salonUsername: "",
@@ -33,7 +33,7 @@ const Login = (props) => {
           const Snapshot = await getDocs(collection(db, "salon"));
           Snapshot.docs.map((doc) => {
             if (doc.data().salonUsername === user.email) {
-              androidcontext.setSalon({ ...doc.data(), id: doc.id });
+              saloncontext.setSalon({ ...doc.data(), id: doc.id });
             }
           });
         }
@@ -47,37 +47,33 @@ const Login = (props) => {
     props.navigation.navigate("Home");
   }
 
-  if (!authcontext.customer) {
-    return (
-      <View style={styles.LoginContainer}>
-        <StatusBar style="light" />
-        <Input
-          placeholder="Username"
-          type="email"
-          autoFocus
-          value={LoginDetails.salonUsername}
-          onChangeText={(text) =>
-            setLoginDetails({ ...LoginDetails, salonUsername: text })
-          }
-        />
-        <Input
-          placeholder="Password"
-          value={LoginDetails.salonPassword}
-          secureTextEntry
-          onChangeText={(text) =>
-            setLoginDetails({ ...LoginDetails, salonPassword: text })
-          }
-        />
-        <Button
-          containerStyle={styles.button}
-          title="SUBMIT"
-          onPress={LoginHandler}
-        />
-      </View>
-    );
-  } else {
-    return <Text>USER LOGGED IN </Text>;
-  }
+  return (
+    <View style={styles.LoginContainer}>
+      <StatusBar style="light" />
+      <Input
+        placeholder="Username"
+        type="email"
+        autoFocus
+        value={LoginDetails.salonUsername}
+        onChangeText={(text) =>
+          setLoginDetails({ ...LoginDetails, salonUsername: text })
+        }
+      />
+      <Input
+        placeholder="Password"
+        value={LoginDetails.salonPassword}
+        secureTextEntry
+        onChangeText={(text) =>
+          setLoginDetails({ ...LoginDetails, salonPassword: text })
+        }
+      />
+      <Button
+        containerStyle={styles.button}
+        title="SUBMIT"
+        onPress={LoginHandler}
+      />
+    </View>
+  );
 };
 
 export default Login;

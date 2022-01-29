@@ -6,20 +6,22 @@ import {
   View,
   Image,
   Platform,
-  TouchableWithoutFeedback,
 } from "react-native";
 import { Button, Input } from "react-native-elements";
 
 import colors from "../../../theme/colors";
 import AndroidContext from "./../../../context/AndroidContext";
-import { doc, runTransaction, setDoc } from "firebase/firestore";
+import { doc, runTransaction } from "firebase/firestore";
 import { db, storage } from "../../../firebaseAndroid";
-import { stringify } from "@firebase/util";
+
 import * as ImagePicker from "expo-image-picker";
 
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
+import SalonContext from "../../../context/SalonContext";
 
 const ProviderInfo = () => {
+  const androidcontext = useContext(AndroidContext);
+  const saloncontext = useContext(SalonContext);
   useEffect(() => {
     getPermission();
   }, []);
@@ -34,7 +36,6 @@ const ProviderInfo = () => {
     }
   };
 
-  const androidcontext = useContext(AndroidContext);
   const [provider, setProvider] = useState();
   const [showAddButton, setShowAddButton] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -45,7 +46,7 @@ const ProviderInfo = () => {
     let cancel = false;
     if (cancel) return;
     if (!provider) {
-      setProvider(androidcontext.salon.serviceproviders[0]);
+      setProvider(saloncontext.salon.serviceproviders[0]);
     }
     return () => {
       cancel = true;
@@ -106,7 +107,7 @@ const ProviderInfo = () => {
   async function uploadPhoto(addHim, setBackendData) {
     const reference = ref(
       storage,
-      `salonImages/${androidcontext.salon.id}/${addHim.id}/${addHim.id}.jpg`
+      `salonImages/${saloncontext.salon.id}/${addHim.id}/${addHim.id}.jpg`
     );
     const img = await fetch(provider.providerPhoto);
     const byte = await img.blob();
@@ -123,12 +124,12 @@ const ProviderInfo = () => {
       id:
         provider.fname +
         provider.lname +
-        androidcontext.salon.id +
+        saloncontext.salon.id +
         provider.mobile,
     };
 
     async function setBackendData(url) {
-      const docRef = doc(db, "salon", androidcontext.salon.id);
+      const docRef = doc(db, "salon", saloncontext.salon.id);
 
       try {
         await runTransaction(db, async (transaction) => {
@@ -160,7 +161,7 @@ const ProviderInfo = () => {
   async function uploadfotoBeforeSaveChanges(setBackendDataAndSalon) {
     const reference = ref(
       storage,
-      `salonImages/${androidcontext.salon.id}/${provider.id}/${provider.id}.jpg`
+      `salonImages/${saloncontext.salon.id}/${provider.id}/${provider.id}.jpg`
     );
     const img = await fetch(provider.providerPhoto);
     const byte = await img.blob();
@@ -179,7 +180,7 @@ const ProviderInfo = () => {
     androidcontext.setButtonDisabled(true);
 
     async function setBackendDataAndSalon(url) {
-      const docRef = doc(db, "salon", androidcontext.salon.id);
+      const docRef = doc(db, "salon", saloncontext.salon.id);
       try {
         await runTransaction(db, async (transaction) => {
           const thisDoc = await transaction.get(docRef);
@@ -206,7 +207,7 @@ const ProviderInfo = () => {
       }
     }
 
-    let notUploaded = androidcontext.salon.serviceproviders.some(
+    let notUploaded = saloncontext.salon.serviceproviders.some(
       (each) => each.providerPhoto === provider.providerPhoto
     );
 
@@ -216,7 +217,7 @@ const ProviderInfo = () => {
   }
 
   async function deleteProvider() {
-    const docRef = doc(db, "salon", androidcontext.salon.id);
+    const docRef = doc(db, "salon", saloncontext.salon.id);
     try {
       await runTransaction(db, async (transaction) => {
         const thisDoc = await transaction.get(docRef);
@@ -235,7 +236,7 @@ const ProviderInfo = () => {
   return (
     <View style={[styles.ProviderInfo, { backgroundColor: colors.dark }]}>
       <View style={styles.TopContainer}>
-        {androidcontext.salon?.serviceproviders.map((each, i) => {
+        {saloncontext.salon?.serviceproviders.map((each, i) => {
           return (
             <Pressable
               onPress={() => {
@@ -303,7 +304,7 @@ const ProviderInfo = () => {
             value={
               provider
                 ? provider.fname
-                : androidcontext.salon.serviceproviders[0].fname
+                : saloncontext.salon.serviceproviders[0].fname
             }
             onChangeText={(text) => {
               // console.log(provider);
@@ -324,7 +325,7 @@ const ProviderInfo = () => {
             value={
               provider
                 ? provider.lname
-                : androidcontext.salon.serviceproviders[0].lname
+                : saloncontext.salon.serviceproviders[0].lname
             }
             onChangeText={(text) => {
               androidcontext.setButtonDisabled(
@@ -370,8 +371,8 @@ const ProviderInfo = () => {
               title="Save Changes"
             />
           )}
-          {showAddButton ? null : androidcontext.salon?.serviceproviders
-              .length < 2 ? null : (
+          {showAddButton ? null : saloncontext.salon?.serviceproviders.length <
+            2 ? null : (
             <Button
               onPress={deleteProvider}
               style={styles.button}

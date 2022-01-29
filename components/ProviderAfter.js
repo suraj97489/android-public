@@ -3,12 +3,14 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import AndroidContext from "../context/AndroidContext";
 import ModalContext from "../context/ModalContext";
+import SalonContext from "../context/SalonContext";
 import colors from "../theme/colors";
 import SpCustNames from "./SpCustNames";
 
 const ProviderAfter = ({ provider, index }) => {
   const modalcontext = useContext(ModalContext);
   const androidcontext = useContext(AndroidContext);
+  const saloncontext = useContext(SalonContext);
   const clickedOnAddCustomer = () => {
     androidcontext.setProviderId(provider.id);
     androidcontext.setAddingcustomer(true);
@@ -22,9 +24,9 @@ const ProviderAfter = ({ provider, index }) => {
         styles.providerAfter,
         {
           display:
-            androidcontext.salonProvidersfordisplay?.length > 0
-              ? androidcontext.salonProvidersfordisplay[index]
-                ? androidcontext.salonProvidersfordisplay[index].display
+            saloncontext.salonProvidersfordisplay?.length > 0
+              ? saloncontext.salonProvidersfordisplay[index]
+                ? saloncontext.salonProvidersfordisplay[index].display
                 : "none"
               : "none",
         },
