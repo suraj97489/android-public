@@ -7,13 +7,14 @@ import SalonpageTwo from "../components/SalonpageTwo";
 import SpModal from "../components/SpModal";
 import ShopOnOffConfirm from "../components/ShopOnOffConfirm";
 import SpinnerScreen from "../components/SpinnerScreen";
-import AuthContext from "../context/AuthContext";
+
 import ModalContext from "../context/ModalContext";
 import { useSelector } from "react-redux";
 const SpHome = (props) => {
   const modalcontext = useContext(ModalContext);
-  const authcontext = useContext(AuthContext);
+
   const salon = useSelector((state) => state.salon.salon);
+  const customer = useSelector((state) => state.customer.customer);
 
   useEffect(() => {
     let cancel = false;
@@ -31,7 +32,7 @@ const SpHome = (props) => {
     };
   }, [salon]);
 
-  if (salon?.salonUsername === authcontext.customer?.email) {
+  if (salon?.salonUsername === customer?.email) {
     return (
       <>
         <ScrollView>
