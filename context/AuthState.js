@@ -2,16 +2,16 @@ import AuthContext from "./AuthContext";
 
 import React, { useContext, useEffect, useState } from "react";
 import { onAuthStateChanged } from "firebase/auth";
-import AndroidContext from "./AndroidContext";
+
 import { collection, getDocs } from "firebase/firestore";
 import { auth, db } from "../firebaseAndroid";
 import { useSelector, useDispatch } from "react-redux";
 import { updateSalon } from "../features/salon/salonSlice";
+import { updateShopButtonText } from "../features/androidSlice";
 
 function AuthState(props) {
   const [customer, setCustomer] = useState();
-  const { setShopButtonText } = useContext(AndroidContext);
-  const salon = useSelector((state) => state.salon.salon);
+
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -25,13 +25,11 @@ function AuthState(props) {
             if (doc.data().salonUsername === user.email) {
               const payLoad = { ...doc.data(), id: doc.id };
               dispatch(updateSalon(payLoad));
-              setShopButtonText(() => {
-                if (doc.data().shopOpen) {
-                  return "shop is open";
-                } else {
-                  return "shop is closed";
-                }
-              });
+              if (doc.data().shopOpen) {
+                dispatch(updateShopButtonText("shop is open"));
+              } else {
+                dispatch(updateShopButtonText("shop is closed"));
+              }
             }
           });
         }
