@@ -1,8 +1,8 @@
-import { doc, runTransaction, setDoc } from "firebase/firestore";
-import React, { useContext, useEffect, useState } from "react";
+import { doc, runTransaction } from "firebase/firestore";
+import React, {  useEffect, useState } from "react";
 import { Pressable } from "react-native";
-import { StyleSheet, Text, TouchableWithoutFeedback, View } from "react-native";
-import { Button, Image } from "react-native-elements";
+import { StyleSheet, Text,  View } from "react-native";
+import {  Image } from "react-native-elements";
 
 import { db } from "../firebaseAndroid";
 import colors from "../theme/colors";

@@ -103,7 +103,7 @@ const SpModal = () => {
       };
       dispatch(updateSalon(payLoad));
     } catch (e) {
-      console.log("something went wrong");
+      console.error("something went wrong");
     }
   }
 

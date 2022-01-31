@@ -19,6 +19,7 @@ import ModalContext from "../context/ModalContext";
 import { useSelector, useDispatch } from "react-redux";
 import {
   updateAddingCustomer,
+  updateCustIndex,
   updateModalVisible,
   updateProviderId,
 } from "../features/androidSlice";

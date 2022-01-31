@@ -40,6 +40,7 @@ const ProviderAfter = ({ provider, index }) => {
                 ? salonProvidersfordisplay[index].display
                 : "none"
               : "none",
+          backgroundColor: colors.dark,
         },
       ]}
     >
@@ -65,7 +66,7 @@ const styles = StyleSheet.create({
   providerAfter: {
     // height: 200,
     width: "96%",
-    backgroundColor: "black",
+    // backgroundColor: "black",
     borderBottomRightRadius: 15,
     borderBottomLeftRadius: 15,
     borderColor: colors.secondary,
