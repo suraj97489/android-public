@@ -10,17 +10,22 @@ import {
 } from "react-native";
 
 import colors from "../theme/colors";
-import AndroidContext from "./../context/AndroidContext";
-import { doc, setDoc, runTransaction } from "firebase/firestore";
+
+import { doc, runTransaction } from "firebase/firestore";
 import { db } from "../firebaseAndroid";
 import { AntDesign } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import ModalContext from "../context/ModalContext";
 import { useSelector, useDispatch } from "react-redux";
+import {
+  updateAddingCustomer,
+  updateModalVisible,
+  updateProviderId,
+} from "../features/androidSlice";
 
 const SpCustNames = ({ customer, index, provider }) => {
   const modalcontext = useContext(ModalContext);
-  const androidcontext = useContext(AndroidContext);
+
   const salon = useSelector((state) => state.salon.salon);
   const dispatch = useDispatch();
   const [sortButton, setSortButton] = useState(false);
@@ -71,10 +76,11 @@ const SpCustNames = ({ customer, index, provider }) => {
     custDisplay === "none" ? setCustDisplay("flex") : setCustDisplay("none");
   }
   function editCustomer() {
-    androidcontext.setProviderId(provider.id);
-    androidcontext.setAddingcustomer(false);
-    androidcontext.setModalVisible(true);
-    androidcontext.setCustIndex(index);
+    dispatch(updateProviderId(provider.id));
+    dispatch(updateAddingCustomer(false));
+    dispatch(updateModalVisible(true));
+    dispatch(updateCustIndex(index));
+
     modalcontext.resetSpModaldata();
   }
   async function done() {
