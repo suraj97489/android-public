@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import { StyleSheet, Text, View, Modal, ScrollView } from "react-native";
 
 import CheckBox from "expo-checkbox";
-import AndroidContext from "../context/AndroidContext";
+
 import { Button, Input } from "react-native-elements";
 import { doc, runTransaction } from "firebase/firestore";
 import { db } from "../firebaseAndroid";
@@ -11,11 +11,15 @@ import colors from "../theme/colors";
 import ModalContext from "../context/ModalContext";
 
 import { useSelector, useDispatch } from "react-redux";
+import { updateModalVisible } from "../features/androidSlice";
 const SpModal = () => {
-  const androidcontext = useContext(AndroidContext);
   const modalcontext = useContext(ModalContext);
 
   const salon = useSelector((state) => state.salon.salon);
+  const modalVisible = useSelector((state) => state.android.modalVisible);
+  const addingcustomer = useSelector((state) => state.android.addingcustomer);
+  const providerId = useSelector((state) => state.android.providerId);
+  const custIndex = useSelector((state) => state.android.custIndex);
   const dispatch = useDispatch();
 
   function updateCheckedValue(index) {
@@ -36,7 +40,7 @@ const SpModal = () => {
   }
 
   async function addOrEditCustomer() {
-    androidcontext.setModalVisible(!androidcontext.modalVisible);
+    dispatch(updateModalVisible(!modalVisible));
     const docRef = doc(db, "salon", salon.id);
     try {
       let newprovidersarray;
@@ -48,11 +52,11 @@ const SpModal = () => {
           throw "Document does not exist!";
         }
 
-        if (androidcontext.addingcustomer) {
+        if (addingcustomer) {
           newprovidersarray = thisDoc
             .data()
             .serviceproviders.map((provider) => {
-              if (provider.id === androidcontext.providerId) {
+              if (provider.id === providerId) {
                 provider.customers.push({
                   email: "",
                   mobile: modalcontext.customerMobile,
@@ -73,10 +77,10 @@ const SpModal = () => {
           newprovidersarray = thisDoc
             .data()
             .serviceproviders.map((provider) => {
-              if (provider.id === androidcontext.providerId) {
+              if (provider.id === providerId) {
                 provider.customers = provider.customers.map(
                   (eachcust, index) => {
-                    if (index === androidcontext.custIndex) {
+                    if (index === custIndex) {
                       eachcust.service = modalcontext.selectedServices;
                       return eachcust;
                     } else {
@@ -107,14 +111,14 @@ const SpModal = () => {
     <Modal
       animationType="slide"
       transparent={true}
-      visible={androidcontext.modalVisible}
+      visible={modalVisible}
       onRequestClose={() => {
-        androidcontext.setModalVisible(!androidcontext.modalVisible);
+        dispatch(updateModalVisible(!modalVisible));
       }}
     >
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          {androidcontext.addingcustomer && (
+          {addingcustomer && (
             <View
               style={{
                 width: "100%",
@@ -160,7 +164,7 @@ const SpModal = () => {
             buttonStyle={{ backgroundColor: colors.secondary }}
             onPress={addOrEditCustomer}
             disabled={
-              androidcontext.addingcustomer
+              addingcustomer
                 ? modalcontext.customerName.length === 0 ||
                   modalcontext.selectedServices.length === 0
                 : modalcontext.selectedServices.length === 0
