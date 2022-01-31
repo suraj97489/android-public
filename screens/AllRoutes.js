@@ -16,8 +16,9 @@ import { db } from "../firebaseAndroid";
 import { useSelector, useDispatch } from "react-redux";
 import { updateSalon } from "../features/salon/salonSlice";
 import { store } from "../app/store";
-import { onAuthStateChanged } from "firebase/auth";
+import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { updateCustomer } from "../features/authSlice";
+import { updateShopButtonText } from "../features/androidSlice";
 const Drawer = createDrawerNavigator();
 const globalScreenOptions = {
   headerStyle: {
@@ -27,7 +28,7 @@ const globalScreenOptions = {
   headerTintColor: "white",
   presentation: "card",
 };
-// const auth = getAuth();
+const auth = getAuth();
 //   signOut(auth)
 //     .then(() => {
 //    setCustomer();
@@ -59,7 +60,8 @@ const AllRoutes = () => {
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
-        dispatch(updateCustomer(user));
+        let cust = { email: user.email };
+        dispatch(updateCustomer(cust));
         async function matchSalon() {
           const Snapshot = await getDocs(collection(db, "salon"));
 

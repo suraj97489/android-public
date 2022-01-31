@@ -31,7 +31,8 @@ const Login = (props) => {
       .then((userCredential) => {
         props.navigation.navigate("Home");
         const user = userCredential.user;
-        dispatch(updateCustomer(user));
+        let cust = { email: user.email };
+        dispatch(updateCustomer(cust));
 
         async function createSalon() {
           const Snapshot = await getDocs(collection(db, "salon"));
