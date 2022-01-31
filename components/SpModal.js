@@ -1,9 +1,6 @@
 import React, { useContext } from "react";
 import { StyleSheet, Text, View, Modal, ScrollView } from "react-native";
 
-// import { CheckBox } from "react-native-elements";
-
-// import CheckBox from '@react-native-community/checkbox';
 import CheckBox from "expo-checkbox";
 import AndroidContext from "../context/AndroidContext";
 import { Button, Input } from "react-native-elements";
