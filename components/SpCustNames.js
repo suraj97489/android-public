@@ -16,12 +16,13 @@ import { db } from "../firebaseAndroid";
 import { AntDesign } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
 import ModalContext from "../context/ModalContext";
-import SalonContext from "../context/SalonContext";
+import { useSelector, useDispatch } from "react-redux";
 
 const SpCustNames = ({ customer, index, provider }) => {
   const modalcontext = useContext(ModalContext);
   const androidcontext = useContext(AndroidContext);
-  const saloncontext = useContext(SalonContext);
+  const salon = useSelector((state) => state.salon.salon);
+  const dispatch = useDispatch();
   const [sortButton, setSortButton] = useState(false);
 
   const [custDisplay, setCustDisplay] = useState("none");
@@ -40,7 +41,7 @@ const SpCustNames = ({ customer, index, provider }) => {
 
   async function sortingHandler() {
     setSortButton(false);
-    const docRef = doc(db, "salon", saloncontext.salon.id);
+    const docRef = doc(db, "salon", salon.id);
     try {
       await runTransaction(db, async (transaction) => {
         const thisDoc = await transaction.get(docRef);
@@ -77,7 +78,7 @@ const SpCustNames = ({ customer, index, provider }) => {
     modalcontext.resetSpModaldata();
   }
   async function done() {
-    const docRef = doc(db, "salon", saloncontext.salon.id);
+    const docRef = doc(db, "salon", salon.id);
     try {
       await runTransaction(db, async (transaction) => {
         const thisDoc = await transaction.get(docRef);
@@ -122,10 +123,7 @@ const SpCustNames = ({ customer, index, provider }) => {
           addedBy: customer.addedBy,
         };
 
-        let salonReportUpdatedArray = [
-          report,
-          ...saloncontext.salon.salonReport,
-        ];
+        let salonReportUpdatedArray = [report, ...salon.salonReport];
 
         transaction.update(docRef, {
           serviceproviders: newprovidersarray,
@@ -138,14 +136,14 @@ const SpCustNames = ({ customer, index, provider }) => {
   }
 
   async function deleteCustomer() {
-    const docRef = doc(db, "salon", saloncontext.salon.id);
+    const docRef = doc(db, "salon", salon.id);
     try {
       let newprovidersarray = await runTransaction(db, async (transaction) => {
         let thisDoc = await transaction.get(docRef);
         if (!thisDoc.exists()) {
           throw "Document does not exist!";
         }
-        let arr = saloncontext.salon.serviceproviders.map((each) => {
+        let arr = salon.serviceproviders.map((each) => {
           if (each.id === provider.id) {
             let custArray = provider.customers.filter((cust, i) => i !== index);
             return { ...provider, customers: custArray };
@@ -159,10 +157,11 @@ const SpCustNames = ({ customer, index, provider }) => {
         return arr;
       });
 
-      saloncontext.setSalon((salon) => ({
+      const payLoad = {
         ...salon,
         serviceproviders: newprovidersarray,
-      }));
+      };
+      dispatch(updateSalon(payLoad));
     } catch (e) {
       console.error("something went wrong");
     }

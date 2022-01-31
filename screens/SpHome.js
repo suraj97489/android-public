@@ -9,18 +9,17 @@ import ShopOnOffConfirm from "../components/ShopOnOffConfirm";
 import SpinnerScreen from "../components/SpinnerScreen";
 import AuthContext from "../context/AuthContext";
 import ModalContext from "../context/ModalContext";
-import SalonContext from "../context/SalonContext";
-
+import { useSelector } from "react-redux";
 const SpHome = (props) => {
-  const saloncontext = useContext(SalonContext);
   const modalcontext = useContext(ModalContext);
   const authcontext = useContext(AuthContext);
+  const salon = useSelector((state) => state.salon.salon);
 
   useEffect(() => {
     let cancel = false;
     if (cancel) return;
-    if (saloncontext.salon) {
-      let updatedServices = saloncontext.salon.services.map((service) => ({
+    if (salon) {
+      let updatedServices = salon.services.map((service) => ({
         ...service,
         checked: false,
       }));
@@ -30,9 +29,9 @@ const SpHome = (props) => {
     return () => {
       cancel = true;
     };
-  }, [saloncontext.salon]);
+  }, [salon]);
 
-  if (saloncontext.salon?.salonUsername === authcontext.customer?.email) {
+  if (salon?.salonUsername === authcontext.customer?.email) {
     return (
       <>
         <ScrollView>

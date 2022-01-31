@@ -7,10 +7,16 @@ import AndroidContext from "../context/AndroidContext";
 import { db } from "../firebaseAndroid";
 import colors from "../theme/colors";
 import { AntDesign } from "@expo/vector-icons";
-import SalonContext from "../context/SalonContext";
+import { useSelector, useDispatch } from "react-redux";
+import { updateSalonProvidersfordisplay } from "../features/salon/salonSlice";
 
 const ProviderBefore = ({ provider }) => {
-  const saloncontext = useContext(SalonContext);
+  const salonProvidersfordisplay = useSelector(
+    (state) => state.salon.salonProvidersfordisplay
+  );
+  const salon = useSelector((state) => state.salon.salon);
+  const dispatch = useDispatch();
+
   const [bookingOn, setBookingOn] = useState(false);
 
   useEffect(() => {
@@ -27,7 +33,7 @@ const ProviderBefore = ({ provider }) => {
   }, [bookingOn, provider]);
 
   async function bookingHandler() {
-    const docRef = doc(db, "salon", saloncontext.salon.id);
+    const docRef = doc(db, "salon", salon.id);
     try {
       await runTransaction(db, async (transaction) => {
         const thisDoc = await transaction.get(docRef);
@@ -53,35 +59,18 @@ const ProviderBefore = ({ provider }) => {
   }
 
   const providerDropDown = () => {
-    saloncontext.setSalonProvidersfordisplay((old) => {
-      if (old) {
-        return old.map((each) => {
-          if (each.id === provider.id) {
-            if (each.display === "none") {
-              return { ...each, display: "flex" };
-            } else {
-              return { ...each, display: "none" };
-            }
-          } else {
-            each.display = "none";
-            return each;
-          }
-        });
+    const payLoad = salonProvidersfordisplay.map((each) => {
+      if (each.id === provider.id) {
+        if (each.display === "none") {
+          return { ...each, display: "flex" };
+        } else {
+          return { ...each, display: "none" };
+        }
       } else {
-        return saloncontext.salon.serviceproviders.map((each) => {
-          if (each.id === provider.id) {
-            if (each.display === "none") {
-              return { ...each, display: "flex" };
-            } else {
-              return { ...each, display: "none" };
-            }
-          } else {
-            each.display = "none";
-            return each;
-          }
-        });
+        return { ...each, display: "none" };
       }
     });
+    dispatch(updateSalonProvidersfordisplay(payLoad));
   };
 
   return (

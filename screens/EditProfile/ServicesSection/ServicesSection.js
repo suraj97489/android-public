@@ -3,12 +3,14 @@ import React, { useContext, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Button, Input } from "react-native-elements";
 
-import SalonContext from "../../../context/SalonContext";
 import { db } from "../../../firebaseAndroid";
 import colors from "../../../theme/colors";
+import { useSelector, useDispatch } from "react-redux";
+import { updateSalon } from "../../../features/salon/salonSlice";
 
 const ServicesSection = () => {
-  const saloncontext = useContext(SalonContext);
+  const salon = useSelector((state) => state.salon.salon);
+  const dispatch = useDispatch();
   const [serviceIndex, setServiceIndex] = useState();
   const [updatedService, setUpdatedService] = useState({
     name: "",
@@ -23,7 +25,7 @@ const ServicesSection = () => {
   }
   async function ClickedOnDeleteService(i) {
     setAddingService(false);
-    const docRef = doc(db, "salon", saloncontext.salon.id);
+    const docRef = doc(db, "salon", salon.id);
     try {
       await runTransaction(db, async (transaction) => {
         const thisDoc = await transaction.get(docRef);
@@ -42,34 +44,31 @@ const ServicesSection = () => {
   }
   function ClickedOnAddService() {
     setAddingService(true);
-    saloncontext.setSalon((salon) => {
-      return {
-        ...salon,
-        services: [...salon.services, { name: "", charges: "" }],
-      };
-    });
+    const payLoad = {
+      ...salon,
+      services: [...salon.services, { name: "", charges: "" }],
+    };
+    dispatch(updateSalon(payLoad));
 
-    setServiceIndex(saloncontext.salon.services.length);
+    setServiceIndex(salon.services.length);
     setUpdatedService({ name: "", charges: "" });
   }
   async function ClickedOnSaveService(i, service) {
     setAddingService(false);
-    const docRef = doc(db, "salon", saloncontext.salon.id);
+    const docRef = doc(db, "salon", salon.id);
     try {
       await runTransaction(db, async (transaction) => {
         const thisDoc = await transaction.get(docRef);
         if (!thisDoc.exists()) {
           throw "doc does not exist";
         }
-        let newServicesArray = saloncontext.salon.services.map(
-          (service, index) => {
-            if (index === i) {
-              return updatedService;
-            } else {
-              return service;
-            }
+        let newServicesArray = salon.services.map((service, index) => {
+          if (index === i) {
+            return updatedService;
+          } else {
+            return service;
           }
-        );
+        });
         transaction.update(docRef, { services: newServicesArray });
       });
       setServiceIndex(null);
@@ -80,13 +79,13 @@ const ServicesSection = () => {
   function ClickedOnCancelUpdating() {
     setServiceIndex(null);
     if (addingService) {
-      saloncontext.salon.services.pop();
+      salon.services.pop();
       setAddingService(false);
     }
   }
   return (
     <View style={styles.ServicesSection}>
-      {saloncontext.salon?.services.map((service, i) => (
+      {salon?.services.map((service, i) => (
         <View
           key={i}
           style={[

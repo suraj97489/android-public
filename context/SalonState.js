@@ -6,21 +6,21 @@ import SalonContext from "./SalonContext";
 const SalonState = (props) => {
   const [salon, setSalon] = useState();
   const [salonProvidersfordisplay, setSalonProvidersfordisplay] = useState([]);
-  useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, "salon"), (snapshot) => {
-      snapshot.docs.map((doc) => {
-        setSalon((old) => {
-          if (doc.data().salonUsername === old?.salonUsername) {
-            return { ...doc.data(), id: doc.id };
-          } else {
-            return old;
-          }
-        });
-      });
-    });
+  // useEffect(() => {
+  //   const unsubscribe = onSnapshot(collection(db, "salon"), (snapshot) => {
+  //     snapshot.docs.map((doc) => {
+  //       setSalon((old) => {
+  //         if (doc.data().salonUsername === old?.salonUsername) {
+  //           return { ...doc.data(), id: doc.id };
+  //         } else {
+  //           return old;
+  //         }
+  //       });
+  //     });
+  //   });
 
-    return unsubscribe;
-  }, []);
+  //   return unsubscribe;
+  // }, []);
   return (
     <SalonContext.Provider
       value={{

@@ -1,18 +1,18 @@
-import { doc, runTransaction, setDoc } from "firebase/firestore";
-import React, { useState, useContext } from "react";
+import { doc, runTransaction } from "firebase/firestore";
+import React, { useContext } from "react";
 import { StyleSheet, Text, View, Modal } from "react-native";
 import { Button } from "react-native-elements";
-import SalonContext from "../context/SalonContext";
 import { db } from "../firebaseAndroid";
 import AndroidContext from "./../context/AndroidContext";
+import { useSelector } from "react-redux";
 
 const ShopOnOffConfirm = () => {
   const androidcontext = useContext(AndroidContext);
-  const saloncontext = useContext(SalonContext);
+  const salon = useSelector((state) => state.salon.salon);
 
   async function shopOpenCloseHandler(e) {
     closeshopOnOffModal();
-    const docRef = doc(db, "salon", saloncontext.salon.id);
+    const docRef = doc(db, "salon", salon.id);
     try {
       await runTransaction(db, async (transaction) => {
         const thisDoc = await transaction.get(docRef);

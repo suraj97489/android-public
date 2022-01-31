@@ -8,11 +8,13 @@ import { db, storage } from "../../../firebaseAndroid";
 import colors from "../../../theme/colors";
 import * as ImagePicker from "expo-image-picker";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import SalonContext from "../../../context/SalonContext";
+import { useSelector, useDispatch } from "react-redux";
+import { updateSalon } from "../../../features/salon/salonSlice";
 
 const SalonInfo = () => {
   const androidcontext = useContext(AndroidContext);
-  const saloncontext = useContext(SalonContext);
+  const salon = useSelector((state) => state.salon.salon);
+  const dispatch = useDispatch();
   const [imageChanged, setImageChanged] = useState(false);
 
   const pickImage = async () => {
@@ -24,10 +26,13 @@ const SalonInfo = () => {
     });
 
     if (!result.cancelled) {
-      saloncontext.setSalon({
-        ...saloncontext.salon,
+      const payLoad = {
+        ...salon,
         salonPhoto: result.uri,
-      });
+      };
+      dispatch(updateSalon(payLoad));
+
+      updateSalon;
       setImageChanged(true);
       androidcontext.setButtonDisabled(false);
     }
@@ -36,16 +41,15 @@ const SalonInfo = () => {
   async function uploadSalonPhoto(setBackendData) {
     try {
       alert("uploadSalonPhoto function working");
-      const reference = ref(
-        storage,
-        `salonImages/${saloncontext.salon.id}/${saloncontext.salon.id}.jpg`
-      );
-      const img = await fetch(saloncontext.salon.salonPhoto);
+      const reference = ref(storage, `salonImages/${salon.id}/${salon.id}.jpg`);
+      const img = await fetch(salon.salonPhoto);
       const byte = await img.blob();
       await uploadBytes(reference, byte);
 
       getDownloadURL(reference).then((url) => {
-        saloncontext.setSalon({ ...saloncontext.salon, salonPhoto: url });
+        const payLoad = { ...salon, salonPhoto: url };
+        dispatch(updateSalon(payLoad));
+
         setBackendData(url);
         setImageChanged(false);
       });
@@ -58,7 +62,7 @@ const SalonInfo = () => {
     androidcontext.setButtonDisabled(true);
 
     async function setBackendData(url) {
-      const docRef = doc(db, "salon", saloncontext.salon.id);
+      const docRef = doc(db, "salon", salon.id);
       try {
         await runTransaction(db, async (transaction) => {
           const thisDoc = await transaction.get(docRef);
@@ -66,8 +70,8 @@ const SalonInfo = () => {
             throw "document does not exist";
           }
           const payLoad = {
-            ...saloncontext.salon,
-            salonPhoto: url ? url : saloncontext.salon.salonPhoto,
+            ...salon,
+            salonPhoto: url ? url : salon.salonPhoto,
           };
           transaction.set(docRef, payLoad);
         });
@@ -103,7 +107,7 @@ const SalonInfo = () => {
         <Image
           source={{
             uri:
-              saloncontext.salon?.salonPhoto ||
+              salon?.salonPhoto ||
               "https://firebasestorage.googleapis.com/v0/b/sk-production-d85c3.appspot.com/o/salonImages%2F%20GEruWRjPVhbLv4FaBf0s%2F%20GEruWRjPVhbLv4FaBf0s?alt=media&token=649a9a1f-d0a1-40b7-8e8f-ff9ce93879ed",
             width: 100,
             height: 100,
@@ -120,18 +124,19 @@ const SalonInfo = () => {
         <Input
           placeholder="Salon Name..."
           autoFocus
-          value={saloncontext.salon?.salonName}
+          value={salon?.salonName}
           style={styles.input}
           onChangeText={(text) => {
             androidcontext.setButtonDisabled(
               text.length < 2 ||
-                saloncontext.salon.address.length < 20 ||
-                saloncontext.salon.mobile.length !== 10
+                salon.address.length < 20 ||
+                salon.mobile.length !== 10
             );
-            saloncontext.setSalon({
-              ...saloncontext.salon,
+            const payLoad = {
+              ...salon,
               salonName: text,
-            });
+            };
+            dispatch(updateSalon(payLoad));
           }}
         />
       </View>
@@ -139,18 +144,19 @@ const SalonInfo = () => {
         <Text style={styles.label}>Address</Text>
         <Input
           placeholder="Address..."
-          value={saloncontext.salon?.address}
+          value={salon?.address}
           style={styles.input}
           onChangeText={(text) => {
             androidcontext.setButtonDisabled(
               text.length < 20 ||
-                saloncontext.salon.salonName.length < 2 ||
-                saloncontext.salon.mobile.length !== 10
+                salon.salonName.length < 2 ||
+                salon.mobile.length !== 10
             );
-            saloncontext.setSalon({
-              ...saloncontext.salon,
+            const payLoad = {
+              ...salon,
               address: text,
-            });
+            };
+            dispatch(updateSalon(payLoad));
           }}
         />
       </View>
@@ -159,18 +165,20 @@ const SalonInfo = () => {
         <Input
           placeholder="Mobile Number..."
           keyboardType="numeric"
-          value={saloncontext.salon?.mobile ? saloncontext.salon.mobile : ""}
+          value={salon?.mobile ? salon.mobile : ""}
           style={styles.input}
           onChangeText={(text) => {
             androidcontext.setButtonDisabled(
               text.length !== 10 ||
-                saloncontext.salon.address.length < 20 ||
-                saloncontext.salon.salonName.length < 2
+                salon.address.length < 20 ||
+                salon.salonName.length < 2
             );
-            saloncontext.setSalon({
-              ...saloncontext.salon,
-              mobile: isNaN(Number(text)) ? saloncontext.salon.mobile : text,
-            });
+
+            const payLoad = {
+              ...salon,
+              mobile: isNaN(Number(text)) ? salon.mobile : text,
+            };
+            dispatch(updateSalon(payLoad));
           }}
         />
       </View>
@@ -178,16 +186,18 @@ const SalonInfo = () => {
         <Text style={styles.label}>Website</Text>
         <Input
           placeholder="Website..."
-          value={saloncontext.salon?.website}
+          value={salon?.website}
           style={styles.input}
           onChangeText={(text) => {
             androidcontext.setButtonDisabled(
               salonName < 2 || address < 25 || mobile !== 10
             );
-            saloncontext.setSalon({
-              ...saloncontext.salon,
+
+            const payLoad = {
+              ...salon,
               website: text,
-            });
+            };
+            dispatch(updateSalon(payLoad));
           }}
         />
       </View>
@@ -203,11 +213,11 @@ const SalonInfo = () => {
         <Switch
           trackColor={{ false: "#767577", true: "#81b0ff" }}
           thumbColor={
-            saloncontext.salon?.popUpActivated ? "#f5dd4b" : "#f4f3f4"
+            salon?.popUpActivated ? "#f5dd4b" : "#f4f3f4"
           }
           ios_backgroundColor="#3e3e3e"
           onValueChange={salonPopUpActivation}
-          value={saloncontext.salon?.popUpActivated || false}
+          value={salon?.popUpActivated || false}
         />
       </View> */}
 

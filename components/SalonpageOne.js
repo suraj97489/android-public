@@ -1,21 +1,22 @@
 import { StatusBar } from "expo-status-bar";
-import React, { useContext, useEffect } from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Image } from "react-native-elements";
-import AndroidContext from "../context/AndroidContext";
-import SalonContext from "../context/SalonContext";
+
+import { useSelector, useDispatch } from "react-redux";
+import { updateSalonProvidersfordisplay } from "../features/salon/salonSlice";
 import colors from "../theme/colors";
 
 const SalonpageOne = () => {
-  const saloncontext = useContext(SalonContext);
+  const salon = useSelector((state) => state.salon.salon);
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    saloncontext.setSalonProvidersfordisplay(
-      saloncontext.salon.serviceproviders.map((provider) => ({
-        ...provider,
-        display: "none",
-      }))
-    );
+    const payLoad = salon?.serviceproviders.map((provider) => ({
+      ...provider,
+      display: "none",
+    }));
+    dispatch(updateSalonProvidersfordisplay(payLoad));
   }, []);
   return (
     <>
@@ -30,7 +31,7 @@ const SalonpageOne = () => {
         <Image
           source={{
             uri:
-              saloncontext.salon?.salonPhoto ||
+              salon?.salonPhoto ||
               "https://images.unsplash.com/photo-1521590832167-7bcbfaa6381f?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8YmVhdXR5JTIwc2Fsb258ZW58MHx8MHx8&w=1000&q=80",
           }}
           style={{ width: 100, height: 100 }}
@@ -43,16 +44,16 @@ const SalonpageOne = () => {
               fontWeight: "bold",
             }}
           >
-            {saloncontext.salon?.salonName || "salon name"}
+            {salon?.salonName || "salon name"}
           </Text>
           <View style={{ width: "70%" }}>
-            <Text style={styles.address}>{saloncontext.salon?.address}</Text>
+            <Text style={styles.address}>{salon?.address}</Text>
           </View>
         </View>
       </View>
       <View style={styles.bottomstrip}>
         <Text style={{ fontWeight: "bold" }}>website :</Text>
-        <Text>{saloncontext.salon?.website}</Text>
+        <Text>{salon?.website}</Text>
       </View>
     </>
   );

@@ -1,11 +1,11 @@
-import React, { useContext } from "react";
+import React from "react";
 import { StyleSheet, View } from "react-native";
 
-import SalonContext from "../context/SalonContext";
 import SpServiceproviderslist from "./SpServiceproviderslist";
+import { useSelector } from "react-redux";
 
 const SalonpageTwoBodyBottom = () => {
-  const saloncontext = useContext(SalonContext);
+  const salon = useSelector((state) => state.salon.salon);
 
   return (
     <View
@@ -16,8 +16,8 @@ const SalonpageTwoBodyBottom = () => {
         marginBottom: 50,
       }}
     >
-      {saloncontext.salon &&
-        saloncontext.salon.serviceproviders.map((provider, i) => (
+      {salon &&
+        salon.serviceproviders.map((provider, i) => (
           <SpServiceproviderslist key={i} provider={provider} index={i} />
         ))}
     </View>

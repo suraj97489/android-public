@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { Button, Input } from "react-native-elements";
 import { signInWithEmailAndPassword } from "firebase/auth";
@@ -9,15 +9,18 @@ import { auth } from "../firebaseAndroid";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebaseAndroid";
 import AuthContext from "../context/AuthContext";
-import SalonContext from "../context/SalonContext";
+
+import { useDispatch } from "react-redux";
+import { updateSalon } from "../features/salon/salonSlice";
 
 const Login = (props) => {
-  const saloncontext = useContext(SalonContext);
   const authcontext = useContext(AuthContext);
   const [LoginDetails, setLoginDetails] = useState({
     salonUsername: "",
     salonPassword: "",
   });
+
+  const dispatch = useDispatch();
 
   const LoginHandler = () => {
     signInWithEmailAndPassword(
@@ -29,15 +32,17 @@ const Login = (props) => {
         props.navigation.navigate("Home");
         const user = userCredential.user;
         authcontext.setCustomer(user);
-        async function updateSalon() {
+        async function createSalon() {
           const Snapshot = await getDocs(collection(db, "salon"));
           Snapshot.docs.map((doc) => {
             if (doc.data().salonUsername === user.email) {
-              saloncontext.setSalon({ ...doc.data(), id: doc.id });
+              const payLoad = { ...doc.data(), id: doc.id };
+
+              dispatch(updateSalon(payLoad));
             }
           });
         }
-        updateSalon();
+        createSalon();
       })
       .catch((err) => {
         alert(err);

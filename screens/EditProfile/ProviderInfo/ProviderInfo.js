@@ -17,11 +17,12 @@ import { db, storage } from "../../../firebaseAndroid";
 import * as ImagePicker from "expo-image-picker";
 
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
-import SalonContext from "../../../context/SalonContext";
+import { useSelector, useDispatch } from "react-redux";
 
 const ProviderInfo = () => {
   const androidcontext = useContext(AndroidContext);
-  const saloncontext = useContext(SalonContext);
+  const salon = useSelector((state) => state.salon.salon);
+  const dispatch = useDispatch();
   useEffect(() => {
     getPermission();
   }, []);
@@ -46,7 +47,7 @@ const ProviderInfo = () => {
     let cancel = false;
     if (cancel) return;
     if (!provider) {
-      setProvider(saloncontext.salon.serviceproviders[0]);
+      setProvider(salon.serviceproviders[0]);
     }
     return () => {
       cancel = true;
@@ -107,7 +108,7 @@ const ProviderInfo = () => {
   async function uploadPhoto(addHim, setBackendData) {
     const reference = ref(
       storage,
-      `salonImages/${saloncontext.salon.id}/${addHim.id}/${addHim.id}.jpg`
+      `salonImages/${salon.id}/${addHim.id}/${addHim.id}.jpg`
     );
     const img = await fetch(provider.providerPhoto);
     const byte = await img.blob();
@@ -121,15 +122,11 @@ const ProviderInfo = () => {
   function addingProvider() {
     let addHim = {
       ...provider,
-      id:
-        provider.fname +
-        provider.lname +
-        saloncontext.salon.id +
-        provider.mobile,
+      id: provider.fname + provider.lname + salon.id + provider.mobile,
     };
 
     async function setBackendData(url) {
-      const docRef = doc(db, "salon", saloncontext.salon.id);
+      const docRef = doc(db, "salon", salon.id);
 
       try {
         await runTransaction(db, async (transaction) => {
@@ -161,7 +158,7 @@ const ProviderInfo = () => {
   async function uploadfotoBeforeSaveChanges(setBackendDataAndSalon) {
     const reference = ref(
       storage,
-      `salonImages/${saloncontext.salon.id}/${provider.id}/${provider.id}.jpg`
+      `salonImages/${salon.id}/${provider.id}/${provider.id}.jpg`
     );
     const img = await fetch(provider.providerPhoto);
     const byte = await img.blob();
@@ -180,7 +177,7 @@ const ProviderInfo = () => {
     androidcontext.setButtonDisabled(true);
 
     async function setBackendDataAndSalon(url) {
-      const docRef = doc(db, "salon", saloncontext.salon.id);
+      const docRef = doc(db, "salon", salon.id);
       try {
         await runTransaction(db, async (transaction) => {
           const thisDoc = await transaction.get(docRef);
@@ -207,7 +204,7 @@ const ProviderInfo = () => {
       }
     }
 
-    let notUploaded = saloncontext.salon.serviceproviders.some(
+    let notUploaded = salon.serviceproviders.some(
       (each) => each.providerPhoto === provider.providerPhoto
     );
 
@@ -217,7 +214,7 @@ const ProviderInfo = () => {
   }
 
   async function deleteProvider() {
-    const docRef = doc(db, "salon", saloncontext.salon.id);
+    const docRef = doc(db, "salon", salon.id);
     try {
       await runTransaction(db, async (transaction) => {
         const thisDoc = await transaction.get(docRef);
@@ -236,7 +233,7 @@ const ProviderInfo = () => {
   return (
     <View style={[styles.ProviderInfo, { backgroundColor: colors.dark }]}>
       <View style={styles.TopContainer}>
-        {saloncontext.salon?.serviceproviders.map((each, i) => {
+        {salon?.serviceproviders.map((each, i) => {
           return (
             <Pressable
               onPress={() => {
@@ -301,11 +298,7 @@ const ProviderInfo = () => {
           <Input
             style={styles.input}
             placeholder="provider's first name"
-            value={
-              provider
-                ? provider.fname
-                : saloncontext.salon.serviceproviders[0].fname
-            }
+            value={provider ? provider.fname : salon.serviceproviders[0].fname}
             onChangeText={(text) => {
               // console.log(provider);
               androidcontext.setButtonDisabled(
@@ -322,11 +315,7 @@ const ProviderInfo = () => {
           <Input
             style={styles.input}
             placeholder="provider's last name"
-            value={
-              provider
-                ? provider.lname
-                : saloncontext.salon.serviceproviders[0].lname
-            }
+            value={provider ? provider.lname : salon.serviceproviders[0].lname}
             onChangeText={(text) => {
               androidcontext.setButtonDisabled(
                 text.length < 2 ||
@@ -371,8 +360,7 @@ const ProviderInfo = () => {
               title="Save Changes"
             />
           )}
-          {showAddButton ? null : saloncontext.salon?.serviceproviders.length <
-            2 ? null : (
+          {showAddButton ? null : salon?.serviceproviders.length < 2 ? null : (
             <Button
               onPress={deleteProvider}
               style={styles.button}

@@ -5,12 +5,15 @@ import { StatusBar } from "expo-status-bar";
 import { Input } from "react-native-elements";
 import SpinnerScreen from "../components/SpinnerScreen";
 import AuthContext from "../context/AuthContext";
-import SalonContext from "../context/SalonContext";
+
+import { useSelector } from "react-redux";
 
 const Report = () => {
   const authcontext = useContext(AuthContext);
-  const saloncontext = useContext(SalonContext);
-  let report = saloncontext.salon?.salonReport;
+
+  const salon = useSelector((state) => state.salon.salon);
+
+  let report = salon?.salonReport;
   const [searchTerm, setSearchTerm] = useState("");
 
   let filteredItems = report?.filter((item) => {
@@ -34,7 +37,7 @@ const Report = () => {
       return item;
     }
   });
-  if (saloncontext.salon?.salonUsername === authcontext.customer?.email) {
+  if (salon?.salonUsername === authcontext.customer?.email) {
     return (
       <>
         <StatusBar style="auto" />

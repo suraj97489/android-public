@@ -1,7 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-  salon: "this is salon state",
+  salon: null,
+  salonProvidersfordisplay: null,
 };
 
 export const salonSlice = createSlice({
@@ -9,12 +10,16 @@ export const salonSlice = createSlice({
   initialState,
   reducers: {
     updateSalon: (state, action) => {
-      state = action.payload;
+      state.salon = action.payload;
+    },
+    updateSalonProvidersfordisplay: (state, action) => {
+      state.salonProvidersfordisplay = action.payload;
     },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { updateSalon } = salonSlice.actions;
+export const { updateSalon, updateSalonProvidersfordisplay } =
+  salonSlice.actions;
 
 export default salonSlice.reducer;

@@ -3,14 +3,18 @@ import { Pressable, StyleSheet, Text, View } from "react-native";
 
 import AndroidContext from "../context/AndroidContext";
 import ModalContext from "../context/ModalContext";
-import SalonContext from "../context/SalonContext";
+
 import colors from "../theme/colors";
 import SpCustNames from "./SpCustNames";
-
+import { useSelector } from "react-redux";
 const ProviderAfter = ({ provider, index }) => {
   const modalcontext = useContext(ModalContext);
   const androidcontext = useContext(AndroidContext);
-  const saloncontext = useContext(SalonContext);
+
+  const salonProvidersfordisplay = useSelector(
+    (state) => state.salon.salonProvidersfordisplay
+  );
+
   const clickedOnAddCustomer = () => {
     androidcontext.setProviderId(provider.id);
     androidcontext.setAddingcustomer(true);
@@ -24,9 +28,9 @@ const ProviderAfter = ({ provider, index }) => {
         styles.providerAfter,
         {
           display:
-            saloncontext.salonProvidersfordisplay?.length > 0
-              ? saloncontext.salonProvidersfordisplay[index]
-                ? saloncontext.salonProvidersfordisplay[index].display
+            salonProvidersfordisplay?.length > 0
+              ? salonProvidersfordisplay[index]
+                ? salonProvidersfordisplay[index].display
                 : "none"
               : "none",
         },

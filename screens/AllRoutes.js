@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createDrawerNavigator } from "@react-navigation/drawer";
@@ -11,7 +11,11 @@ import EditProfile from "./EditProfile/EditProfile";
 
 import colors from "../theme/colors";
 import AuthContext from "../context/AuthContext";
-
+import { collection, onSnapshot } from "firebase/firestore";
+import { db } from "../firebaseAndroid";
+import { useSelector, useDispatch } from "react-redux";
+import { updateSalon } from "../features/salon/salonSlice";
+import { store } from "../app/store";
 const Drawer = createDrawerNavigator();
 const globalScreenOptions = {
   headerStyle: {
@@ -24,7 +28,24 @@ const globalScreenOptions = {
 
 const AllRoutes = () => {
   const authcontext = useContext(AuthContext);
+  // const salon = useSelector((state) => state.salon.salon);
+  const dispatch = useDispatch();
 
+  useEffect(() => {
+    const unsubscribe = onSnapshot(collection(db, "salon"), (snapshot) => {
+      snapshot.docs.map((doc) => {
+        const salon = store.getState().salon.salon;
+
+        if (doc.data().salonUsername === salon?.salonUsername) {
+          const payLoad = { ...doc.data(), id: doc.id };
+          console.log(payLoad);
+          dispatch(updateSalon(payLoad));
+        }
+      });
+    });
+
+    return unsubscribe;
+  }, []);
   return (
     <NavigationContainer>
       <Drawer.Navigator

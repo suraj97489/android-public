@@ -1,12 +1,5 @@
 import React, { useContext } from "react";
-import {
-  StyleSheet,
-  Text,
-  View,
-  Modal,
-  Pressable,
-  ScrollView,
-} from "react-native";
+import { StyleSheet, Text, View, Modal, ScrollView } from "react-native";
 
 // import { CheckBox } from "react-native-elements";
 
@@ -19,12 +12,14 @@ import { db } from "../firebaseAndroid";
 
 import colors from "../theme/colors";
 import ModalContext from "../context/ModalContext";
-import SalonContext from "../context/SalonContext";
 
+import { useSelector, useDispatch } from "react-redux";
 const SpModal = () => {
   const androidcontext = useContext(AndroidContext);
   const modalcontext = useContext(ModalContext);
-  const saloncontext = useContext(SalonContext);
+
+  const salon = useSelector((state) => state.salon.salon);
+  const dispatch = useDispatch();
 
   function updateCheckedValue(index) {
     let updatedServicesArray = modalcontext.services.map((service, i) => {
@@ -45,7 +40,7 @@ const SpModal = () => {
 
   async function addOrEditCustomer() {
     androidcontext.setModalVisible(!androidcontext.modalVisible);
-    const docRef = doc(db, "salon", saloncontext.salon.id);
+    const docRef = doc(db, "salon", salon.id);
     try {
       let newprovidersarray;
 
@@ -101,11 +96,11 @@ const SpModal = () => {
           transaction.update(docRef, { serviceproviders: newprovidersarray });
         }
       });
-
-      saloncontext.setSalon((salon) => ({
+      const payLoad = {
         ...salon,
         serviceproviders: newprovidersarray,
-      }));
+      };
+      dispatch(updateSalon(payLoad));
     } catch (e) {
       console.log("something went wrong");
     }

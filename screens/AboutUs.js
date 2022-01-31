@@ -1,7 +1,19 @@
-import React from "react";
+import React, { useContext, useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
-
+import { getAuth, signOut } from "firebase/auth";
+import AuthContext from "../context/AuthContext";
 const AboutUs = () => {
+  const authcontext = useContext(AuthContext);
+  useEffect(() => {
+    const auth = getAuth();
+    signOut(auth)
+      .then(() => {
+        authcontext.setCustomer();
+      })
+      .catch((error) => {
+        // An error happened.
+      });
+  }, []);
   return (
     <View style={styles.about}>
       <Text style={styles.heading}>About Us</Text>

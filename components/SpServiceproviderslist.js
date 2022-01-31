@@ -1,8 +1,7 @@
-import React, { useContext, useEffect } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import react from "react";
+import { StyleSheet, View } from "react-native";
 import ProviderAfter from "./ProviderAfter";
 import ProviderBefore from "./ProviderBefore";
-import AndroidContext from "./../context/AndroidContext";
 
 const SpServiceproviderslist = ({ provider, index }) => {
   return (
