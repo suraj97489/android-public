@@ -8,19 +8,19 @@ import { auth } from "../firebaseAndroid";
 
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../firebaseAndroid";
-import AuthContext from "../context/AuthContext";
 
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { updateSalon } from "../features/salon/salonSlice";
+import { updateCustomer } from "../features/authSlice";
 
 const Login = (props) => {
-  const authcontext = useContext(AuthContext);
   const [LoginDetails, setLoginDetails] = useState({
     salonUsername: "",
     salonPassword: "",
   });
 
   const dispatch = useDispatch();
+  const customer = useSelector((state) => state.customer.customer);
 
   const LoginHandler = () => {
     signInWithEmailAndPassword(
@@ -31,7 +31,8 @@ const Login = (props) => {
       .then((userCredential) => {
         props.navigation.navigate("Home");
         const user = userCredential.user;
-        authcontext.setCustomer(user);
+        dispatch(updateCustomer(user));
+
         async function createSalon() {
           const Snapshot = await getDocs(collection(db, "salon"));
           Snapshot.docs.map((doc) => {
@@ -48,7 +49,7 @@ const Login = (props) => {
         alert(err);
       });
   };
-  if (authcontext.customer) {
+  if (customer) {
     props.navigation.navigate("Home");
   }
 
