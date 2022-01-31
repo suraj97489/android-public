@@ -2,12 +2,14 @@ import { doc, setDoc } from "firebase/firestore";
 import React, { useContext, useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Button } from "react-native-elements";
+import { useDispatch, useSelector } from "react-redux";
+import { updateShopOnoffModal } from "../features/androidSlice";
 import { db } from "../firebaseAndroid";
 import colors from "../theme/colors";
-import AndroidContext from "./../context/AndroidContext";
 
 const SalonpageTwoBodyTop = () => {
-  const androidcontext = useContext(AndroidContext);
+  const dispatch = useDispatch();
+  const shopButtonText = useSelector((state) => state.android.shopButtonText);
 
   let time;
   const [cTime, setcTime] = useState(time);
@@ -32,9 +34,9 @@ const SalonpageTwoBodyTop = () => {
       <Text style={styles.serviceproviders}>SERVICE PROVIDERS</Text>
       <Button
         onPress={() => {
-          androidcontext.setShopOnOffModal(true);
+          dispatch(updateShopOnoffModal(true));
         }}
-        title={androidcontext.shopButtonText}
+        title={shopButtonText}
       />
       <Text style={{ marginVertical: 10 }}>{cTime}</Text>
     </View>

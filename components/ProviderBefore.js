@@ -3,7 +3,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Pressable } from "react-native";
 import { StyleSheet, Text, TouchableWithoutFeedback, View } from "react-native";
 import { Button, Image } from "react-native-elements";
-import AndroidContext from "../context/AndroidContext";
+
 import { db } from "../firebaseAndroid";
 import colors from "../theme/colors";
 import { AntDesign } from "@expo/vector-icons";
