@@ -1,24 +1,31 @@
 import React, { useContext } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-import AndroidContext from "../context/AndroidContext";
 import ModalContext from "../context/ModalContext";
 
 import colors from "../theme/colors";
 import SpCustNames from "./SpCustNames";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import {
+  updateAddingCustomer,
+  updateModalVisible,
+  updateProviderId,
+} from "../features/androidSlice";
 const ProviderAfter = ({ provider, index }) => {
   const modalcontext = useContext(ModalContext);
-  const androidcontext = useContext(AndroidContext);
+
+  const dispatch = useDispatch();
 
   const salonProvidersfordisplay = useSelector(
     (state) => state.salon.salonProvidersfordisplay
   );
 
   const clickedOnAddCustomer = () => {
-    androidcontext.setProviderId(provider.id);
-    androidcontext.setAddingcustomer(true);
-    androidcontext.setModalVisible(true);
+    dispatch(updateProviderId(provider.id));
+
+    dispatch(updateAddingCustomer(true));
+
+    dispatch(updateModalVisible(true));
     modalcontext.resetSpModaldata();
   };
 
