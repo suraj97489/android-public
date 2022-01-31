@@ -46,6 +46,7 @@ const AllRoutes = () => {
 
     return unsubscribe;
   }, []);
+
   return (
     <NavigationContainer>
       <Drawer.Navigator
