@@ -3,17 +3,18 @@ import React, { useContext, useState } from "react";
 import { Image } from "react-native";
 import { StyleSheet, Text, View } from "react-native";
 import { Button, Input } from "react-native-elements";
-import AndroidContext from "../../../context/AndroidContext";
+
 import { db, storage } from "../../../firebaseAndroid";
 import colors from "../../../theme/colors";
 import * as ImagePicker from "expo-image-picker";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useSelector, useDispatch } from "react-redux";
 import { updateSalon } from "../../../features/salon/salonSlice";
+import { updateButtonDisabled } from "../../../features/androidSlice";
 
 const SalonInfo = () => {
-  const androidcontext = useContext(AndroidContext);
   const salon = useSelector((state) => state.salon.salon);
+  const buttonDisabled = useSelector((state) => state.android.buttonDisabled);
   const dispatch = useDispatch();
   const [imageChanged, setImageChanged] = useState(false);
 
@@ -34,7 +35,8 @@ const SalonInfo = () => {
 
       updateSalon;
       setImageChanged(true);
-      androidcontext.setButtonDisabled(false);
+
+      dispatch(updateButtonDisabled(false));
     }
   };
 
@@ -59,7 +61,7 @@ const SalonInfo = () => {
   }
 
   function SaveSalonChanges() {
-    androidcontext.setButtonDisabled(true);
+    dispatch(updateButtonDisabled(true));
 
     async function setBackendData(url) {
       const docRef = doc(db, "salon", salon.id);
@@ -75,10 +77,10 @@ const SalonInfo = () => {
           };
           transaction.set(docRef, payLoad);
         });
-        androidcontext.setButtonDisabled(true);
+        dispatch(updateButtonDisabled(true));
       } catch (e) {
         console.error("something went wrong");
-        androidcontext.setButtonDisabled(false);
+        dispatch(updateButtonDisabled(true));
       }
     }
     imageChanged ? uploadSalonPhoto(setBackendData) : setBackendData();
@@ -127,11 +129,12 @@ const SalonInfo = () => {
           value={salon?.salonName}
           style={styles.input}
           onChangeText={(text) => {
-            androidcontext.setButtonDisabled(
+            let booleanValue =
               text.length < 2 ||
-                salon.address.length < 20 ||
-                salon.mobile.length !== 10
-            );
+              salon.address.length < 20 ||
+              salon.mobile.length !== 10;
+            dispatch(updateButtonDisabled(booleanValue));
+
             const payLoad = {
               ...salon,
               salonName: text,
@@ -147,11 +150,12 @@ const SalonInfo = () => {
           value={salon?.address}
           style={styles.input}
           onChangeText={(text) => {
-            androidcontext.setButtonDisabled(
+            let booleanValue =
               text.length < 20 ||
-                salon.salonName.length < 2 ||
-                salon.mobile.length !== 10
-            );
+              salon.salonName.length < 2 ||
+              salon.mobile.length !== 10;
+
+            dispatch(updateButtonDisabled(booleanValue));
             const payLoad = {
               ...salon,
               address: text,
@@ -168,11 +172,12 @@ const SalonInfo = () => {
           value={salon?.mobile ? salon.mobile : ""}
           style={styles.input}
           onChangeText={(text) => {
-            androidcontext.setButtonDisabled(
+            let booleanValue =
               text.length !== 10 ||
-                salon.address.length < 20 ||
-                salon.salonName.length < 2
-            );
+              salon.address.length < 20 ||
+              salon.salonName.length < 2;
+
+            dispatch(updateButtonDisabled(booleanValue));
 
             const payLoad = {
               ...salon,
@@ -189,9 +194,9 @@ const SalonInfo = () => {
           value={salon?.website}
           style={styles.input}
           onChangeText={(text) => {
-            androidcontext.setButtonDisabled(
-              salonName < 2 || address < 25 || mobile !== 10
-            );
+            let booleanValue = salonName < 2 || address < 25 || mobile !== 10;
+
+            dispatch(updateButtonDisabled(booleanValue));
 
             const payLoad = {
               ...salon,
@@ -222,7 +227,7 @@ const SalonInfo = () => {
       </View> */}
 
       <Button
-        disabled={androidcontext.buttonDisabled}
+        disabled={buttonDisabled}
         style={{ margin: 15 }}
         title="Save Changes"
         onPress={SaveSalonChanges}
