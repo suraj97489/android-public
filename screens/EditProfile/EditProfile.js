@@ -9,15 +9,15 @@ import colors from "../../theme/colors";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
 
 import SpinnerScreen from "../../components/SpinnerScreen";
-import AuthContext from "../../context/AuthContext";
+
 import { useSelector, useDispatch } from "react-redux";
 import { updateButtonDisabled } from "../../features/androidSlice";
 
 const EditProfile = () => {
   const [buttonText, setButtonText] = useState("Salon Info");
 
-  const authcontext = useContext(AuthContext);
   const salon = useSelector((state) => state.salon.salon);
+  const customer = useSelector((state) => state.customer.customer);
   const dispatch = useDispatch();
 
   function returnComponent() {
@@ -46,7 +46,7 @@ const EditProfile = () => {
     borderWidth: buttonText === "Services" ? 2 : 0,
   };
 
-  if (salon?.salonUsername === authcontext.customer?.email) {
+  if (salon?.salonUsername === customer?.email) {
     return (
       <ScrollView>
         <StatusBar style="auto" />
