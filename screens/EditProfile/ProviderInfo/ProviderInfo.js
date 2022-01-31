@@ -300,7 +300,6 @@ const ProviderInfo = () => {
             placeholder="provider's first name"
             value={provider ? provider.fname : salon.serviceproviders[0].fname}
             onChangeText={(text) => {
-              // console.log(provider);
               androidcontext.setButtonDisabled(
                 text.length < 2 ||
                   provider.mobile.length !== 10 ||

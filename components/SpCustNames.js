@@ -138,12 +138,13 @@ const SpCustNames = ({ customer, index, provider }) => {
   async function deleteCustomer() {
     const docRef = doc(db, "salon", salon.id);
     try {
-      let newprovidersarray = await runTransaction(db, async (transaction) => {
+      let newprovidersarray;
+      await runTransaction(db, async (transaction) => {
         let thisDoc = await transaction.get(docRef);
         if (!thisDoc.exists()) {
           throw "Document does not exist!";
         }
-        let arr = salon.serviceproviders.map((each) => {
+        newprovidersarray = salon.serviceproviders.map((each) => {
           if (each.id === provider.id) {
             let custArray = provider.customers.filter((cust, i) => i !== index);
             return { ...provider, customers: custArray };
@@ -152,9 +153,7 @@ const SpCustNames = ({ customer, index, provider }) => {
           }
         });
 
-        transaction.update(docRef, { serviceproviders: arr });
-
-        return arr;
+        transaction.update(docRef, { serviceproviders: newprovidersarray });
       });
 
       const payLoad = {

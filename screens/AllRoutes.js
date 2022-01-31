@@ -38,7 +38,7 @@ const AllRoutes = () => {
 
         if (doc.data().salonUsername === salon?.salonUsername) {
           const payLoad = { ...doc.data(), id: doc.id };
-          console.log(payLoad);
+
           dispatch(updateSalon(payLoad));
         }
       });
