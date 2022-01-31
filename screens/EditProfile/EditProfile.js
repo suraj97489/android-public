@@ -7,14 +7,15 @@ import ProviderInfo from "./ProviderInfo/ProviderInfo";
 import ServicesSection from "./ServicesSection/ServicesSection";
 import colors from "../../theme/colors";
 import { TouchableWithoutFeedback } from "react-native-gesture-handler";
-import AndroidContext from "../../context/AndroidContext";
+
 import SpinnerScreen from "../../components/SpinnerScreen";
 import AuthContext from "../../context/AuthContext";
 import { useSelector, useDispatch } from "react-redux";
+import { updateButtonDisabled } from "../../features/androidSlice";
 
 const EditProfile = () => {
   const [buttonText, setButtonText] = useState("Salon Info");
-  const androidcontext = useContext(AndroidContext);
+
   const authcontext = useContext(AuthContext);
   const salon = useSelector((state) => state.salon.salon);
   const dispatch = useDispatch();
@@ -52,7 +53,7 @@ const EditProfile = () => {
         <View style={styles.title_div}>
           <TouchableWithoutFeedback
             onPress={() => {
-              androidcontext.setButtonDisabled(true);
+              dispatch(updateButtonDisabled(true));
               setButtonText("Provider Info");
             }}
             style={[styles.topButtons, providerInfoActive]}
@@ -70,7 +71,7 @@ const EditProfile = () => {
           </TouchableWithoutFeedback>
           <TouchableWithoutFeedback
             onPress={() => {
-              androidcontext.setButtonDisabled(true);
+              dispatch(updateButtonDisabled(true));
               setButtonText("Salon Info");
             }}
             style={[styles.topButtons, salonInfoActive]}
@@ -86,7 +87,7 @@ const EditProfile = () => {
           </TouchableWithoutFeedback>
           <TouchableWithoutFeedback
             onPress={() => {
-              androidcontext.setButtonDisabled(true);
+              dispatch(updateButtonDisabled(true));
               setButtonText("Services");
             }}
             style={[styles.topButtons, ServicesActive]}
