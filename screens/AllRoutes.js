@@ -11,11 +11,13 @@ import EditProfile from "./EditProfile/EditProfile";
 
 import colors from "../theme/colors";
 
-import { collection, onSnapshot } from "firebase/firestore";
+import { collection, getDocs, onSnapshot } from "firebase/firestore";
 import { db } from "../firebaseAndroid";
 import { useSelector, useDispatch } from "react-redux";
 import { updateSalon } from "../features/salon/salonSlice";
 import { store } from "../app/store";
+import { onAuthStateChanged } from "firebase/auth";
+import { updateCustomer } from "../features/authSlice";
 const Drawer = createDrawerNavigator();
 const globalScreenOptions = {
   headerStyle: {
@@ -25,6 +27,14 @@ const globalScreenOptions = {
   headerTintColor: "white",
   presentation: "card",
 };
+// const auth = getAuth();
+//   signOut(auth)
+//     .then(() => {
+//    setCustomer();
+//     })
+//     .catch((error) => {
+//       // An error happened.
+//     });
 
 const AllRoutes = () => {
   const customer = useSelector((state) => state.customer.customer);
@@ -41,6 +51,34 @@ const AllRoutes = () => {
           dispatch(updateSalon(payLoad));
         }
       });
+    });
+
+    return unsubscribe;
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        dispatch(updateCustomer(user));
+        async function matchSalon() {
+          const Snapshot = await getDocs(collection(db, "salon"));
+
+          Snapshot.docs.map((doc) => {
+            if (doc.data().salonUsername === user.email) {
+              const payLoad = { ...doc.data(), id: doc.id };
+              dispatch(updateSalon(payLoad));
+              if (doc.data().shopOpen) {
+                dispatch(updateShopButtonText("shop is open"));
+              } else {
+                dispatch(updateShopButtonText("shop is closed"));
+              }
+            }
+          });
+        }
+        matchSalon();
+      } else {
+        dispatch(updateCustomer(null));
+      }
     });
 
     return unsubscribe;
