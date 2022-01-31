@@ -3,12 +3,18 @@ import React, { useContext } from "react";
 import { StyleSheet, Text, View, Modal } from "react-native";
 import { Button } from "react-native-elements";
 import { db } from "../firebaseAndroid";
-import AndroidContext from "./../context/AndroidContext";
-import { useSelector } from "react-redux";
+
+import { useDispatch, useSelector } from "react-redux";
+import {
+  updateShopButtonText,
+  updateShopOnoffModal,
+} from "../features/androidSlice";
 
 const ShopOnOffConfirm = () => {
-  const androidcontext = useContext(AndroidContext);
   const salon = useSelector((state) => state.salon.salon);
+  const shopButtonText = useSelector((state) => state.android.shopButtonText);
+  const shopOnOffModal = useSelector((state) => state.android.shopOnOffModal);
+  const dispatch = useDispatch();
 
   async function shopOpenCloseHandler(e) {
     closeshopOnOffModal();
@@ -20,14 +26,13 @@ const ShopOnOffConfirm = () => {
           throw "Document does not exist!";
         }
         transaction.update(docRef, {
-          shopOpen:
-            androidcontext.shopButtonText === "shop is open" ? false : true,
+          shopOpen: shopButtonText === "shop is open" ? false : true,
         });
       });
-      if (androidcontext.shopButtonText === "shop is open") {
-        androidcontext.setShopButtonText("shop is closed");
+      if (shopButtonText === "shop is open") {
+        dispatch(updateShopButtonText("shop is closed"));
       } else {
-        androidcontext.setShopButtonText("shop is open");
+        dispatch(updateShopButtonText("shop is open"));
       }
     } catch (e) {
       console.error("something went wrong");
@@ -35,19 +40,19 @@ const ShopOnOffConfirm = () => {
   }
 
   function closeshopOnOffModal() {
-    androidcontext.setShopOnOffModal(false);
+    dispatch(updateShopOnoffModal(false));
   }
   return (
     <Modal
       animationType="slide"
       transparent={true}
-      visible={androidcontext.shopOnOffModal}
+      visible={shopOnOffModal}
       onRequestClose={closeshopOnOffModal}
     >
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
           <Text>
-            {androidcontext.shopButtonText === "shop is open"
+            {shopButtonText === "shop is open"
               ? "are you sure you want to close shop?"
               : "are you sure you want to open shop?"}
           </Text>
