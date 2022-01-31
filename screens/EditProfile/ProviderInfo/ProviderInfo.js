@@ -10,7 +10,7 @@ import {
 import { Button, Input } from "react-native-elements";
 
 import colors from "../../../theme/colors";
-import AndroidContext from "./../../../context/AndroidContext";
+
 import { doc, runTransaction } from "firebase/firestore";
 import { db, storage } from "../../../firebaseAndroid";
 
@@ -18,10 +18,11 @@ import * as ImagePicker from "expo-image-picker";
 
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useSelector, useDispatch } from "react-redux";
+import { updateButtonDisabled } from "../../../features/androidSlice";
 
 const ProviderInfo = () => {
-  const androidcontext = useContext(AndroidContext);
   const salon = useSelector((state) => state.salon.salon);
+  const buttonDisabled = useSelector((state) => state.android.buttonDisabled);
   const dispatch = useDispatch();
   useEffect(() => {
     getPermission();
@@ -62,7 +63,8 @@ const ProviderInfo = () => {
         provider.fname.length < 2 ||
         provider.lname.length < 2 ||
         provider.mobile.length !== 10;
-      androidcontext.setButtonDisabled(booleanValue);
+
+      dispatch(updateButtonDisabled(booleanValue));
     }
 
     return () => {
@@ -76,7 +78,7 @@ const ProviderInfo = () => {
   }
 
   function addProvider() {
-    androidcontext.setButtonDisabled(true);
+    dispatch(updateButtonDisabled(true));
 
     setShowAddButton(true);
 
@@ -101,7 +103,8 @@ const ProviderInfo = () => {
 
     if (!result.cancelled) {
       setProvider({ ...provider, providerPhoto: result.uri });
-      androidcontext.setButtonDisabled(false);
+
+      dispatch(updateButtonDisabled(false));
     }
   };
 
@@ -174,7 +177,7 @@ const ProviderInfo = () => {
   }
 
   async function saveChanges() {
-    androidcontext.setButtonDisabled(true);
+    dispatch(updateButtonDisabled(true));
 
     async function setBackendDataAndSalon(url) {
       const docRef = doc(db, "salon", salon.id);
@@ -300,11 +303,11 @@ const ProviderInfo = () => {
             placeholder="provider's first name"
             value={provider ? provider.fname : salon.serviceproviders[0].fname}
             onChangeText={(text) => {
-              androidcontext.setButtonDisabled(
+              let booleanValue =
                 text.length < 2 ||
-                  provider.mobile.length !== 10 ||
-                  provider.lname.length < 2
-              );
+                provider.mobile.length !== 10 ||
+                provider.lname.length < 2;
+              dispatch(updateButtonDisabled(booleanValue));
               setProvider({ ...provider, fname: text });
             }}
           />
@@ -316,11 +319,11 @@ const ProviderInfo = () => {
             placeholder="provider's last name"
             value={provider ? provider.lname : salon.serviceproviders[0].lname}
             onChangeText={(text) => {
-              androidcontext.setButtonDisabled(
+              let booleanValue =
                 text.length < 2 ||
-                  provider.mobile.length !== 10 ||
-                  provider.fname.length < 2
-              );
+                provider.mobile.length !== 10 ||
+                provider.fname.length < 2;
+              dispatch(updateButtonDisabled(booleanValue));
               setProvider({ ...provider, lname: text });
             }}
           />
@@ -336,7 +339,8 @@ const ProviderInfo = () => {
               if (isNaN(Number(text))) {
                 setProvider((old) => ({ ...old, mobile: old.mobile }));
               } else {
-                androidcontext.setButtonDisabled(text.length !== 10);
+                let booleanValue = text.length !== 10;
+                dispatch(updateButtonDisabled(booleanValue));
                 setProvider({ ...provider, mobile: text });
               }
             }}
@@ -347,7 +351,7 @@ const ProviderInfo = () => {
             <Button
               style={styles.button}
               onPress={addingProvider}
-              disabled={androidcontext.buttonDisabled}
+              disabled={buttonDisabled}
               title="Add Provider"
             />
           ) : (
@@ -355,7 +359,7 @@ const ProviderInfo = () => {
               style={styles.button}
               containerStyle={{ marginHorizontal: 20 }}
               onPress={saveChanges}
-              disabled={androidcontext.buttonDisabled}
+              disabled={buttonDisabled}
               title="Save Changes"
             />
           )}
