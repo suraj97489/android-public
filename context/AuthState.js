@@ -41,6 +41,16 @@ function AuthState(props) {
 
     return unsubscribe;
   }, []);
+  // useEffect(() => {
+  //   const auth = getAuth();
+  //   signOut(auth)
+  //     .then(() => {
+  //    setCustomer();
+  //     })
+  //     .catch((error) => {
+  //       // An error happened.
+  //     });
+  // }, []);
   return (
     <AuthContext.Provider value={{ customer, setCustomer }}>
       {props.children}

@@ -10,7 +10,7 @@ import SpHome from "./SpHome";
 import EditProfile from "./EditProfile/EditProfile";
 
 import colors from "../theme/colors";
-import AuthContext from "../context/AuthContext";
+
 import { collection, onSnapshot } from "firebase/firestore";
 import { db } from "../firebaseAndroid";
 import { useSelector, useDispatch } from "react-redux";
@@ -27,8 +27,7 @@ const globalScreenOptions = {
 };
 
 const AllRoutes = () => {
-  const authcontext = useContext(AuthContext);
-  // const salon = useSelector((state) => state.salon.salon);
+  const customer = useSelector((state) => state.customer.customer);
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -53,7 +52,7 @@ const AllRoutes = () => {
         initialRouteName="Login"
         screenOptions={globalScreenOptions}
       >
-        {authcontext.customer ? (
+        {customer ? (
           <>
             <Drawer.Screen name="Home" component={SpHome} />
             <Drawer.Screen name="Edit Profile" component={EditProfile} />
