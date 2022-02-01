@@ -19,14 +19,23 @@ const ProviderAfter = ({ provider, index }) => {
   const salonProvidersfordisplay = useSelector(
     (state) => state.salon.salonProvidersfordisplay
   );
-
+  function resetSpModaldata() {
+    let updatedServices = services.map((service) => ({
+      ...service,
+      checked: false,
+    }));
+    modalcontext.setServices(updatedServices);
+    modalcontext.setCustomerMobile("");
+    modalcontext.setCustomerName("");
+    modalcontext.setSelectedServices([]);
+  }
   const clickedOnAddCustomer = () => {
     dispatch(updateProviderId(provider.id));
 
     dispatch(updateAddingCustomer(true));
 
     dispatch(updateModalVisible(true));
-    modalcontext.resetSpModaldata();
+    resetSpModaldata();
   };
 
   return (
@@ -50,6 +59,7 @@ const ProviderAfter = ({ provider, index }) => {
           customer={customer}
           index={i}
           provider={provider}
+          resetSpModaldata={resetSpModaldata}
         />
       ))}
 

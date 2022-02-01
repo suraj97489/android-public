@@ -6,16 +6,7 @@ const ModalState = (props) => {
   const [customerMobile, setCustomerMobile] = useState("");
   const [services, setServices] = useState();
   const [selectedServices, setSelectedServices] = useState([]);
-  function resetSpModaldata() {
-    let updatedServices = services.map((service) => ({
-      ...service,
-      checked: false,
-    }));
-    setServices(updatedServices);
-    setCustomerMobile("");
-    setCustomerName("");
-    setSelectedServices([]);
-  }
+
   return (
     <ModalContext.Provider
       value={{
@@ -27,7 +18,6 @@ const ModalState = (props) => {
         setServices,
         selectedServices,
         setSelectedServices,
-        resetSpModaldata,
       }}
     >
       {props.children}

@@ -24,7 +24,7 @@ import {
   updateProviderId,
 } from "../features/androidSlice";
 
-const SpCustNames = ({ customer, index, provider }) => {
+const SpCustNames = ({ customer, index, provider, resetSpModaldata }) => {
   const modalcontext = useContext(ModalContext);
 
   const salon = useSelector((state) => state.salon.salon);
@@ -82,7 +82,7 @@ const SpCustNames = ({ customer, index, provider }) => {
     dispatch(updateModalVisible(true));
     dispatch(updateCustIndex(index));
 
-    modalcontext.resetSpModaldata();
+    resetSpModaldata();
   }
   async function done() {
     const docRef = doc(db, "salon", salon.id);
