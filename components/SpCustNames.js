@@ -15,7 +15,7 @@ import { doc, runTransaction } from "firebase/firestore";
 import { db } from "../firebaseAndroid";
 import { AntDesign } from "@expo/vector-icons";
 import { Feather } from "@expo/vector-icons";
-import ModalContext from "../context/ModalContext";
+
 import { useSelector, useDispatch } from "react-redux";
 import {
   updateAddingCustomer,
@@ -25,8 +25,6 @@ import {
 } from "../features/androidSlice";
 
 const SpCustNames = ({ customer, index, provider, resetSpModaldata }) => {
-  const modalcontext = useContext(ModalContext);
-
   const salon = useSelector((state) => state.salon.salon);
   const dispatch = useDispatch();
   const [sortButton, setSortButton] = useState(false);
