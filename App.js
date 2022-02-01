@@ -3,7 +3,6 @@ import { StyleSheet } from "react-native";
 import "react-native-gesture-handler";
 
 import AllRoutes from "./screens/AllRoutes";
-import "expo-dev-client";
 
 import ModalState from "./context/ModalState";
 
