@@ -62,17 +62,19 @@ const Login = (props) => {
         type="email"
         autoFocus
         value={LoginDetails.salonUsername}
-        onChangeText={(text) =>
-          setLoginDetails({ ...LoginDetails, salonUsername: text })
-        }
+        onChangeText={(text) => {
+          let removedSpaces = text.replace(/ /g, "");
+          setLoginDetails({ ...LoginDetails, salonUsername: removedSpaces });
+        }}
       />
       <Input
         placeholder="Password"
         value={LoginDetails.salonPassword}
         secureTextEntry
-        onChangeText={(text) =>
-          setLoginDetails({ ...LoginDetails, salonPassword: text })
-        }
+        onChangeText={(text) => {
+          let removedSpaces = text.replace(/ /g, "");
+          setLoginDetails({ ...LoginDetails, salonPassword: removedSpaces });
+        }}
       />
       <Button
         containerStyle={styles.button}

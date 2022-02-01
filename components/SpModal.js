@@ -6,7 +6,7 @@ import CheckBox from "expo-checkbox";
 import { Button, Input } from "react-native-elements";
 import { doc, runTransaction } from "firebase/firestore";
 import { db } from "../firebaseAndroid";
-
+import { AntDesign } from "@expo/vector-icons";
 import colors from "../theme/colors";
 
 import { useSelector, useDispatch } from "react-redux";
@@ -32,8 +32,8 @@ const SpModal = () => {
   function updateCheckedValue(index) {
     let updatedServicesArray = services.map((service, i) => {
       if (i === index) {
-        service.checked = !service.checked;
-        return service;
+        let value = service.checked ? false : true;
+        return { ...service, checked: value };
       } else {
         return service;
       }
@@ -124,6 +124,19 @@ const SpModal = () => {
     >
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
+          <AntDesign
+            name="closecircle"
+            style={{
+              position: "absolute",
+              right: -10,
+              top: -10,
+              backgroundColor: "white",
+              borderRadius: "50%",
+            }}
+            onPress={()=>{dispatch(updateModalVisible(false))}}
+            size={24}
+            color="red"
+          />
           {addingcustomer && (
             <View
               style={{
@@ -138,14 +151,20 @@ const SpModal = () => {
                 type="text"
                 autoFocus
                 value={customerName}
-                onChangeText={(text) => dispatch(updateCustomerName(text))}
+                onChangeText={(text) => {
+                  dispatch(updateCustomerName(text));
+                }}
               />
               <Text> Mobile</Text>
               <Input
                 placeholder="Customer's Mobile(optional)"
                 keyboardType="numeric"
                 value={customerMobile}
-                onChangeText={(text) => dispatch(updateCustomerMobile(text))}
+                onChangeText={(text) => {
+                  let removedSpaces = text.replace(/ /g, "");
+                  if (removedSpaces.length > 10 || isNaN(removedSpaces)) return;
+                  dispatch(updateCustomerMobile(removedSpaces));
+                }}
               />
             </View>
           )}
