@@ -8,22 +8,29 @@ import { doc, runTransaction } from "firebase/firestore";
 import { db } from "../firebaseAndroid";
 
 import colors from "../theme/colors";
-import ModalContext from "../context/ModalContext";
 
 import { useSelector, useDispatch } from "react-redux";
 import { updateModalVisible } from "../features/androidSlice";
+import {
+  updateCustomerMobile,
+  updateCustomerName,
+  updateSelectedServices,
+  updateServices,
+} from "../features/modalSlice";
 const SpModal = () => {
-  const modalcontext = useContext(ModalContext);
-
   const salon = useSelector((state) => state.salon.salon);
   const modalVisible = useSelector((state) => state.android.modalVisible);
   const addingcustomer = useSelector((state) => state.android.addingcustomer);
   const providerId = useSelector((state) => state.android.providerId);
   const custIndex = useSelector((state) => state.android.custIndex);
+  const services = useSelector((state) => state.modal.services);
+  const customerMobile = useSelector((state) => state.modal.customerMobile);
+  const customerName = useSelector((state) => state.modal.customerName);
+  const selectedServices = useSelector((state) => state.modal.selectedServices);
   const dispatch = useDispatch();
 
   function updateCheckedValue(index) {
-    let updatedServicesArray = modalcontext.services.map((service, i) => {
+    let updatedServicesArray = services.map((service, i) => {
       if (i === index) {
         service.checked = !service.checked;
         return service;
@@ -31,12 +38,11 @@ const SpModal = () => {
         return service;
       }
     });
-    modalcontext.setSelectedServices(() => {
-      return updatedServicesArray
-        .filter((service) => service.checked === true)
-        .map((service) => service.name);
-    });
-    modalcontext.setServices(updatedServicesArray);
+    let updatedValue = updatedServicesArray
+      .filter((service) => service.checked === true)
+      .map((service) => service.name);
+    dispatch(updateSelectedServices(updatedValue));
+    dispatch(updateServices(updatedServicesArray));
   }
 
   async function addOrEditCustomer() {
@@ -59,9 +65,9 @@ const SpModal = () => {
               if (provider.id === providerId) {
                 provider.customers.push({
                   email: "",
-                  mobile: modalcontext.customerMobile,
-                  name: modalcontext.customerName,
-                  service: modalcontext.selectedServices,
+                  mobile: customerMobile,
+                  name: customerName,
+                  service: selectedServices,
                   checkStatus: false,
                   addedBy: "provider",
                 });
@@ -81,7 +87,7 @@ const SpModal = () => {
                 provider.customers = provider.customers.map(
                   (eachcust, index) => {
                     if (index === custIndex) {
-                      eachcust.service = modalcontext.selectedServices;
+                      eachcust.service = selectedServices;
                       return eachcust;
                     } else {
                       return eachcust;
@@ -131,20 +137,20 @@ const SpModal = () => {
                 placeholder="Customer's Name"
                 type="text"
                 autoFocus
-                value={modalcontext.customerName}
-                onChangeText={(text) => modalcontext.setCustomerName(text)}
+                value={customerName}
+                onChangeText={(text) => dispatch(updateCustomerName(text))}
               />
               <Text> Mobile</Text>
               <Input
                 placeholder="Customer's Mobile(optional)"
                 keyboardType="numeric"
-                value={modalcontext.customerMobile}
-                onChangeText={(text) => modalcontext.setCustomerMobile(text)}
+                value={customerMobile}
+                onChangeText={(text) => dispatch(updateCustomerMobile(text))}
               />
             </View>
           )}
           <ScrollView style={{ width: "100%", height: 150 }}>
-            {modalcontext.services?.map((service, i) => (
+            {services?.map((service, i) => (
               <View key={i} style={styles.serviceContainer}>
                 <CheckBox
                   value={service.checked}
@@ -165,9 +171,8 @@ const SpModal = () => {
             onPress={addOrEditCustomer}
             disabled={
               addingcustomer
-                ? modalcontext.customerName.length === 0 ||
-                  modalcontext.selectedServices.length === 0
-                : modalcontext.selectedServices.length === 0
+                ? customerName.length === 0 || selectedServices.length === 0
+                : selectedServices.length === 0
             }
             title="Submit"
           >
