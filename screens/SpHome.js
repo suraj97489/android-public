@@ -7,12 +7,11 @@ import SalonpageTwo from "../components/SalonpageTwo";
 import SpModal from "../components/SpModal";
 import ShopOnOffConfirm from "../components/ShopOnOffConfirm";
 import SpinnerScreen from "../components/SpinnerScreen";
+import { useSelector, useDispatch } from "react-redux";
+import { updateServices } from "../features/modalSlice";
 
-import ModalContext from "../context/ModalContext";
-import { useSelector } from "react-redux";
 const SpHome = (props) => {
-  const modalcontext = useContext(ModalContext);
-
+  const dispatch = useDispatch();
   const salon = useSelector((state) => state.salon.salon);
   const customer = useSelector((state) => state.customer.customer);
 
@@ -25,7 +24,7 @@ const SpHome = (props) => {
         checked: false,
       }));
 
-      modalcontext.setServices(updatedServices);
+      dispatch(updateServices(updatedServices));
     }
     return () => {
       cancel = true;
