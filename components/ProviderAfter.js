@@ -21,6 +21,7 @@ const ProviderAfter = ({ provider, index }) => {
   const salonProvidersfordisplay = useSelector(
     (state) => state.salon.salonProvidersfordisplay
   );
+  const services = useSelector((state) => state.modal.services);
   function resetSpModaldata() {
     let updatedServices = services.map((service) => ({
       ...service,
