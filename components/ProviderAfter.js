@@ -1,8 +1,6 @@
 import React, { useContext } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-import ModalContext from "../context/ModalContext";
-
 import colors from "../theme/colors";
 import SpCustNames from "./SpCustNames";
 import { useSelector, useDispatch } from "react-redux";
@@ -11,9 +9,13 @@ import {
   updateModalVisible,
   updateProviderId,
 } from "../features/androidSlice";
+import {
+  updateCustomerMobile,
+  updateCustomerName,
+  updateSelectedServices,
+  updateServices,
+} from "../features/modalSlice";
 const ProviderAfter = ({ provider, index }) => {
-  const modalcontext = useContext(ModalContext);
-
   const dispatch = useDispatch();
 
   const salonProvidersfordisplay = useSelector(
@@ -24,10 +26,10 @@ const ProviderAfter = ({ provider, index }) => {
       ...service,
       checked: false,
     }));
-    modalcontext.setServices(updatedServices);
-    modalcontext.setCustomerMobile("");
-    modalcontext.setCustomerName("");
-    modalcontext.setSelectedServices([]);
+    dispatch(updateServices(updatedServices));
+    dispatch(updateCustomerMobile(""));
+    dispatch(updateCustomerName(""));
+    dispatch(updateSelectedServices([]));
   }
   const clickedOnAddCustomer = () => {
     dispatch(updateProviderId(provider.id));
