@@ -128,12 +128,12 @@ const SpModal = () => {
             name="closecircle"
             style={{
               position: "absolute",
-              right: -10,
-              top: -10,
-              backgroundColor: "white",
-              borderRadius: "50%",
+              right: -6,
+              top: -6,
             }}
-            onPress={()=>{dispatch(updateModalVisible(false))}}
+            onPress={() => {
+              dispatch(updateModalVisible(false));
+            }}
             size={24}
             color="red"
           />
