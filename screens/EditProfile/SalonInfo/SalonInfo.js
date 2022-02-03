@@ -194,7 +194,10 @@ const SalonInfo = () => {
           value={salon?.website}
           style={styles.input}
           onChangeText={(text) => {
-            let booleanValue = salonName < 2 || address < 25 || mobile !== 10;
+            let booleanValue =
+              salon.salonName.length < 2 ||
+              salon.address.length < 25 ||
+              salon.mobile.length !== 10;
 
             dispatch(updateButtonDisabled(booleanValue));
 
