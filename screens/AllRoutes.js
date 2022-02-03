@@ -5,7 +5,7 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import ContactUs from "./ContactUs";
 import AboutUs from "./AboutUs";
 import Login from "./Login";
-import Report from "./Report";
+import Report from "./Report/Report";
 import SpHome from "./SpHome";
 import EditProfile from "./EditProfile/EditProfile";
 
