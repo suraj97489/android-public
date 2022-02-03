@@ -78,8 +78,11 @@ const ServicesSection = () => {
   }
   function ClickedOnCancelUpdating() {
     setServiceIndex(null);
+    let serviceIndex = salon.services.length - 1;
     if (addingService) {
-      salon.services.pop();
+      let newArr = salon.services.filter((service, i) => i !== serviceIndex);
+      let payLoad = { ...salon, services: newArr };
+      dispatch(updateSalon(payLoad));
       setAddingService(false);
     }
   }
