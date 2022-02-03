@@ -46,10 +46,10 @@ export const androidSlice = createSlice({
       state.doneModal = action.payload;
     },
     updateDoneCustomer: (state, action) => {
-      state.doneModal = action.payload;
+      state.doneCustomer = action.payload;
     },
     updateDoneProvider: (state, action) => {
-      state.doneModal = action.payload;
+      state.doneProvider = action.payload;
     },
   },
 });

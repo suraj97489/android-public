@@ -26,14 +26,20 @@ const DoneModal = () => {
           throw "Document does not exist!";
         }
 
-        let newprovidersarray = thisDoc.data().serviceproviders.map((each) => {
+        let newprovidersarray = salon.serviceproviders.map((each) => {
           if (each.id === provider.id) {
             let time = new Date().getTime();
-            each.customers = each.customers.filter((cust, i) => i !== 0);
-            each.checkingTime = time + 1000 * 150;
-            each.customerResponded = false;
-            each.popUpTime = time + 1000 * 60;
-            return each;
+            let customers = each.customers.filter((cust, i) => i !== 0);
+            let checkingTime = time + 1000 * 150;
+            let customerResponded = false;
+            let popUpTime = time + 1000 * 60;
+            return {
+              ...each,
+              customers,
+              checkingTime,
+              customerResponded,
+              popUpTime,
+            };
           } else {
             return each;
           }
@@ -42,9 +48,9 @@ const DoneModal = () => {
         let date = new Date().toDateString();
         let time = new Date().toLocaleTimeString();
         let serviceWithCharges = customer.service.map((eachServiceName) => {
-          return thisDoc
-            .data()
-            ?.services.find((service) => service.name === eachServiceName);
+          return salon?.services.find(
+            (service) => service.name === eachServiceName
+          );
         });
 
         let customerPaid = serviceWithCharges.reduce((accumulte, service) => {
@@ -89,6 +95,7 @@ const DoneModal = () => {
             <Button
               onPress={() => {
                 done();
+                dispatch(updateDoneModal(false));
               }}
               title="save"
               titleStyle={{ color: "black" }}

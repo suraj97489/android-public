@@ -20,8 +20,8 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   updateAddingCustomer,
   updateCustIndex,
-  updateDoneCustomer,
   updateDoneModal,
+  updateDoneCustomer,
   updateDoneProvider,
   updateModalVisible,
   updateProviderId,
@@ -95,7 +95,7 @@ const SpCustNames = ({ customer, index, provider, resetSpModaldata }) => {
         if (!thisDoc.exists()) {
           throw "Document does not exist!";
         }
-        newprovidersarray = salon.serviceproviders.map((each) => {
+        newprovidersarray = thisDoc.data().serviceproviders.map((each) => {
           if (each.id === provider.id) {
             let custArray = provider.customers.filter((cust, i) => i !== index);
             return { ...provider, customers: custArray };
@@ -106,12 +106,6 @@ const SpCustNames = ({ customer, index, provider, resetSpModaldata }) => {
 
         transaction.update(docRef, { serviceproviders: newprovidersarray });
       });
-
-      const payLoad = {
-        ...salon,
-        serviceproviders: newprovidersarray,
-      };
-      dispatch(updateSalon(payLoad));
     } catch (e) {
       console.error("something went wrong");
     }

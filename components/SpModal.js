@@ -63,16 +63,17 @@ const SpModal = () => {
             .data()
             .serviceproviders.map((provider) => {
               if (provider.id === providerId) {
-                provider.customers.push({
+                let newCustomer = {
                   email: "",
                   mobile: customerMobile,
                   name: customerName,
                   service: selectedServices,
                   checkStatus: false,
                   addedBy: "provider",
-                });
+                };
+                let customers = [...provider.customers, newCustomer];
 
-                return provider;
+                return { ...provider, customers };
               } else {
                 return provider;
               }
@@ -84,17 +85,15 @@ const SpModal = () => {
             .data()
             .serviceproviders.map((provider) => {
               if (provider.id === providerId) {
-                provider.customers = provider.customers.map(
-                  (eachcust, index) => {
-                    if (index === custIndex) {
-                      eachcust.service = selectedServices;
-                      return eachcust;
-                    } else {
-                      return eachcust;
-                    }
+                let customers = provider.customers.map((eachcust, index) => {
+                  if (index === custIndex) {
+                    let service = selectedServices;
+                    return { ...eachcust, service };
+                  } else {
+                    return eachcust;
                   }
-                );
-                return provider;
+                });
+                return { ...provider, customers };
               } else {
                 return provider;
               }
@@ -103,11 +102,6 @@ const SpModal = () => {
           transaction.update(docRef, { serviceproviders: newprovidersarray });
         }
       });
-      const payLoad = {
-        ...salon,
-        serviceproviders: newprovidersarray,
-      };
-      dispatch(updateSalon(payLoad));
     } catch (e) {
       console.error("something went wrong");
     }
