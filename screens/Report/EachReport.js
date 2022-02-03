@@ -24,7 +24,7 @@ const EachReport = ({ item }) => {
       </View>
 
       <View style={styles.Provider_Date_Time_container}>
-        <Text>{item.providerName}</Text>
+        <Text style={{ maxWidth: "35%" }}>{item.providerName}</Text>
         <Text>{item.date}</Text>
         <Text>{item.time}</Text>
       </View>
