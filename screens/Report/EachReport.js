@@ -18,6 +18,11 @@ const EachReport = ({ item }) => {
         </View>
       ))}
 
+      <View style={styles.totalWithCharges}>
+        <Text style={styles.bolder}>total</Text>
+        <Text style={styles.bolder}>{item.customerPaid} Rs</Text>
+      </View>
+
       <View style={styles.Provider_Date_Time_container}>
         <Text>{item.providerName}</Text>
         <Text>{item.date}</Text>
@@ -59,13 +64,26 @@ const styles = StyleSheet.create({
   service_Name_And_Charges_Container: {
     flexDirection: "row",
     width: "100%",
-
+    // borderWidth: 1,
+    // borderColor: "red",
     justifyContent: "space-between",
     paddingVertical: 10,
     paddingHorizontal: 20,
   },
   textServiceNameAndCharges: {
     fontWeight: "bold",
+  },
+  totalWithCharges: {
+    flexDirection: "row",
+    width: "95%",
+    justifyContent: "space-between",
+    padding: 10,
+    borderTopColor: "black",
+    borderTopWidth: 2,
+  },
+  bolder: {
+    fontWeight: "bold",
+    fontSize: 17,
   },
   Provider_Date_Time_container: {
     // backgroundColor: "green",
