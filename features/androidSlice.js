@@ -9,6 +9,9 @@ const initialState = {
   buttonDisabled: true,
   shopButtonText: "shop is open",
   shopOnOffModal: false,
+  doneModal: false,
+  doneCustomer: null,
+  doneProvider: null,
 };
 
 export const androidSlice = createSlice({
@@ -39,6 +42,15 @@ export const androidSlice = createSlice({
     updateShopOnoffModal: (state, action) => {
       state.shopOnOffModal = action.payload;
     },
+    updateDoneModal: (state, action) => {
+      state.doneModal = action.payload;
+    },
+    updateDoneCustomer: (state, action) => {
+      state.doneModal = action.payload;
+    },
+    updateDoneProvider: (state, action) => {
+      state.doneModal = action.payload;
+    },
   },
 });
 
@@ -51,6 +63,9 @@ export const {
   updateButtonDisabled,
   updateShopButtonText,
   updateShopOnoffModal,
+  updateDoneModal,
+  updateDoneCustomer,
+  updateDoneProvider,
 } = androidSlice.actions;
 
 export default androidSlice.reducer;

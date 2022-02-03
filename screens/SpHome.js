@@ -9,6 +9,7 @@ import ShopOnOffConfirm from "../components/ShopOnOffConfirm";
 import SpinnerScreen from "../components/SpinnerScreen";
 import { useSelector, useDispatch } from "react-redux";
 import { updateServices } from "../features/modalSlice";
+import DoneModal from "../components/DoneModal";
 
 const SpHome = (props) => {
   const dispatch = useDispatch();
@@ -55,6 +56,7 @@ const SpHome = (props) => {
             right: 0,
           }}
         >
+          <DoneModal></DoneModal>
           <Text style={{ color: "white" }}>
             ©salonkatta pvt.ltd. All rights reserved.
           </Text>

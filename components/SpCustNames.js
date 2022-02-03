@@ -20,6 +20,9 @@ import { useSelector, useDispatch } from "react-redux";
 import {
   updateAddingCustomer,
   updateCustIndex,
+  updateDoneCustomer,
+  updateDoneModal,
+  updateDoneProvider,
   updateModalVisible,
   updateProviderId,
 } from "../features/androidSlice";
@@ -82,63 +85,6 @@ const SpCustNames = ({ customer, index, provider, resetSpModaldata }) => {
 
     resetSpModaldata();
   }
-  async function done() {
-    const docRef = doc(db, "salon", salon.id);
-    try {
-      await runTransaction(db, async (transaction) => {
-        const thisDoc = await transaction.get(docRef);
-        if (!thisDoc.exists()) {
-          throw "Document does not exist!";
-        }
-
-        let newprovidersarray = thisDoc.data().serviceproviders.map((each) => {
-          if (each.id === provider.id) {
-            let time = new Date().getTime();
-            each.customers = each.customers.filter((cust, i) => i !== 0);
-            each.checkingTime = time + 1000 * 150;
-            each.customerResponded = false;
-            each.popUpTime = time + 1000 * 60;
-            return each;
-          } else {
-            return each;
-          }
-        });
-
-        let date = new Date().toDateString();
-        let time = new Date().toLocaleTimeString();
-        let serviceWithCharges = customer.service.map((eachServiceName) => {
-          return thisDoc
-            .data()
-            ?.services.find((service) => service.name === eachServiceName);
-        });
-
-        let customerPaid = serviceWithCharges.reduce((accumulte, service) => {
-          return accumulte + Number(service.charges);
-        }, 0);
-
-        let report = {
-          custName: customer.name,
-          custMobile: customer.mobile,
-          providerName: provider.fname + " " + provider.lname,
-          date: date,
-          time: time,
-          services: serviceWithCharges,
-          providerId: provider.id,
-          customerPaid: customerPaid,
-          addedBy: customer.addedBy,
-        };
-
-        let salonReportUpdatedArray = [report, ...salon.salonReport];
-
-        transaction.update(docRef, {
-          serviceproviders: newprovidersarray,
-          salonReport: salonReportUpdatedArray,
-        });
-      });
-    } catch (e) {
-      console.error("Something went wrong");
-    }
-  }
 
   async function deleteCustomer() {
     const docRef = doc(db, "salon", salon.id);
@@ -194,7 +140,14 @@ const SpCustNames = ({ customer, index, provider, resetSpModaldata }) => {
           <Text style={styles.customerName}>{customer?.name || ""}</Text>
           {index === 0 ? (
             <Pressable style={styles.doneContainer}>
-              <Text style={{ color: "black" }} onPress={done}>
+              <Text
+                style={{ color: "black" }}
+                onPress={() => {
+                  dispatch(updateDoneCustomer(customer));
+                  dispatch(updateDoneProvider(provider));
+                  dispatch(updateDoneModal(true));
+                }}
+              >
                 DONE
               </Text>
             </Pressable>
