@@ -10,6 +10,7 @@ import SpinnerScreen from "../components/SpinnerScreen";
 import { useSelector, useDispatch } from "react-redux";
 import { updateServices } from "../features/modalSlice";
 import DoneModal from "../components/DoneModal";
+import DeleteCustomerModal from "../components/DeleteCustomerModal";
 
 const SpHome = (props) => {
   const dispatch = useDispatch();
@@ -57,6 +58,7 @@ const SpHome = (props) => {
           }}
         >
           <DoneModal></DoneModal>
+          <DeleteCustomerModal />
           <Text style={{ color: "white" }}>
             ©salonkatta pvt.ltd. All rights reserved.
           </Text>

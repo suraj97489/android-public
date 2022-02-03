@@ -21,10 +21,11 @@ import {
   updateAddingCustomer,
   updateCustIndex,
   updateDoneModal,
-  updateDoneCustomer,
-  updateDoneProvider,
+  updateActiveCustomer,
+  updateActiveProvider,
   updateModalVisible,
   updateProviderId,
+  updateDeleteCustomerModal,
 } from "../features/androidSlice";
 
 const SpCustNames = ({ customer, index, provider, resetSpModaldata }) => {
@@ -86,31 +87,6 @@ const SpCustNames = ({ customer, index, provider, resetSpModaldata }) => {
     resetSpModaldata();
   }
 
-  async function deleteCustomer() {
-    const docRef = doc(db, "salon", salon.id);
-    try {
-      let newprovidersarray;
-      await runTransaction(db, async (transaction) => {
-        let thisDoc = await transaction.get(docRef);
-        if (!thisDoc.exists()) {
-          throw "Document does not exist!";
-        }
-        newprovidersarray = thisDoc.data().serviceproviders.map((each) => {
-          if (each.id === provider.id) {
-            let custArray = provider.customers.filter((cust, i) => i !== index);
-            return { ...provider, customers: custArray };
-          } else {
-            return each;
-          }
-        });
-
-        transaction.update(docRef, { serviceproviders: newprovidersarray });
-      });
-    } catch (e) {
-      console.error("something went wrong");
-    }
-  }
-
   const dialCall = () => {
     let phoneNumber = "";
 
@@ -137,8 +113,8 @@ const SpCustNames = ({ customer, index, provider, resetSpModaldata }) => {
               <Text
                 style={{ color: "black" }}
                 onPress={() => {
-                  dispatch(updateDoneCustomer(customer));
-                  dispatch(updateDoneProvider(provider));
+                  dispatch(updateActiveCustomer(customer));
+                  dispatch(updateActiveProvider(provider));
                   dispatch(updateDoneModal(true));
                 }}
               >
@@ -204,7 +180,15 @@ const SpCustNames = ({ customer, index, provider, resetSpModaldata }) => {
             >
               <Text style={{ color: "black" }}>edit</Text>
             </Pressable>
-            <Pressable onPress={deleteCustomer} style={styles.buttons}>
+            <Pressable
+              onPress={() => {
+                dispatch(updateDeleteCustomerModal(true));
+                dispatch(updateActiveProvider(provider));
+                dispatch(updateActiveCustomer(customer));
+                dispatch(updateCustIndex(index));
+              }}
+              style={styles.buttons}
+            >
               <Text style={{ color: "black" }}>delete</Text>
             </Pressable>
           </View>

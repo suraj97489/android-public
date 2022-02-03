@@ -1,5 +1,5 @@
 import { Modal, StyleSheet, Text, View } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { updateDoneModal } from "../features/androidSlice";
 import { Button } from "react-native-elements/dist/buttons/Button";
@@ -12,8 +12,8 @@ const DoneModal = () => {
   const dispatch = useDispatch();
   const salon = useSelector((state) => state.salon.salon);
   const doneModal = useSelector((state) => state.android.doneModal);
-  const provider = useSelector((state) => state.android.doneProvider);
-  const customer = useSelector((state) => state.android.doneCustomer);
+  const provider = useSelector((state) => state.android.activeProvider);
+  const customer = useSelector((state) => state.android.activeCustomer);
   const [extra, setExtra] = useState("");
 
   let serviceWithCharges = customer?.service.map((eachServiceName) => {

@@ -10,8 +10,9 @@ const initialState = {
   shopButtonText: "shop is open",
   shopOnOffModal: false,
   doneModal: false,
-  doneCustomer: null,
-  doneProvider: null,
+  activeCustomer: null,
+  activeProvider: null,
+  deleteCustomerModal: false,
 };
 
 export const androidSlice = createSlice({
@@ -45,11 +46,14 @@ export const androidSlice = createSlice({
     updateDoneModal: (state, action) => {
       state.doneModal = action.payload;
     },
-    updateDoneCustomer: (state, action) => {
-      state.doneCustomer = action.payload;
+    updateActiveCustomer: (state, action) => {
+      state.activeCustomer = action.payload;
     },
-    updateDoneProvider: (state, action) => {
-      state.doneProvider = action.payload;
+    updateActiveProvider: (state, action) => {
+      state.activeProvider = action.payload;
+    },
+    updateDeleteCustomerModal: (state, action) => {
+      state.deleteCustomerModal = action.payload;
     },
   },
 });
@@ -64,8 +68,9 @@ export const {
   updateShopButtonText,
   updateShopOnoffModal,
   updateDoneModal,
-  updateDoneCustomer,
-  updateDoneProvider,
+  updateActiveCustomer,
+  updateActiveProvider,
+  updateDeleteCustomerModal,
 } = androidSlice.actions;
 
 export default androidSlice.reducer;
