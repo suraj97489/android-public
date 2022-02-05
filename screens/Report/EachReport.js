@@ -22,7 +22,15 @@ const EachReport = ({ item }) => {
         <View style={styles.service_Name_And_Charges_Container}>
           <Text style={styles.textServiceNameAndCharges}>extra charges</Text>
           <Text style={styles.textServiceNameAndCharges}>
-            {item.extra + " Rs"}
+            + {item.extra + " Rs"}
+          </Text>
+        </View>
+      ) : null}
+      {item.lessCharges !== 0 && item.lessCharges !== undefined ? (
+        <View style={styles.service_Name_And_Charges_Container}>
+          <Text style={styles.textServiceNameAndCharges}>less charges</Text>
+          <Text style={styles.textServiceNameAndCharges}>
+            - {item.lessCharges + " Rs"}
           </Text>
         </View>
       ) : null}
@@ -30,7 +38,8 @@ const EachReport = ({ item }) => {
       <View style={styles.totalWithCharges}>
         <Text style={styles.bolder}>total</Text>
         <Text style={styles.bolder}>
-          {Number(item.customerPaid) + item.extra} Rs
+          {Number(item.customerPaid) + item.extra - item.lessCharges}
+          Rs
         </Text>
       </View>
 
