@@ -5,6 +5,7 @@ import { createDrawerNavigator } from "@react-navigation/drawer";
 import ContactUs from "./ContactUs";
 import AboutUs from "./AboutUs";
 import Login from "./Login";
+import LogOut from "./LogOut";
 import Report from "./Report/Report";
 import SpHome from "./SpHome";
 import EditProfile from "./EditProfile/EditProfile";
@@ -97,6 +98,7 @@ const AllRoutes = () => {
             <Drawer.Screen name="Home" component={SpHome} />
             <Drawer.Screen name="Edit Profile" component={EditProfile} />
             <Drawer.Screen name="Report" component={Report} />
+            <Drawer.Screen name="Log Out" component={LogOut} />
           </>
         ) : (
           <Drawer.Screen name="Login" component={Login} />
