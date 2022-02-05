@@ -12,13 +12,13 @@ const firebaseConfig = {
   // messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
   // appId: process.env.REACT_APP_APP_ID,
   // measurementId: process.env.REACT_APP_MEASUREMENT_ID,
-  apiKey: "AIzaSyCDABZeTU2k7bzLIk14gDJkIxWLatN_d-8",
-  authDomain: "salonkatta-bff6d.firebaseapp.com",
-  projectId: "salonkatta-bff6d",
-  storageBucket: "salonkatta-bff6d.appspot.com",
-  messagingSenderId: "471341648576",
-  appId: "1:471341648576:web:2910cbda481ee746fdfb25",
-  measurementId: "G-5BR8J6NF36",
+  apiKey: "AIzaSyAUv7Pq-QMdrGKXR7UCzytHbYw2AHxHkkk",
+  authDomain: "salonkattanew.firebaseapp.com",
+  projectId: "salonkattanew",
+  storageBucket: "salonkattanew.appspot.com",
+  messagingSenderId: "786462931290",
+  appId: "1:786462931290:web:e29160555434d424ec5b63",
+  measurementId: "G-MRCG06HR18",
 };
 
 const firebaseApp = initializeApp(firebaseConfig);
