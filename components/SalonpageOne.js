@@ -2,10 +2,12 @@ import { StatusBar } from "expo-status-bar";
 import React, { useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Image } from "react-native-elements";
+import { useSelector } from "react-redux";
 
 import colors from "../theme/colors";
 
 const SalonpageOne = () => {
+  const salon = useSelector((state) => state.salon.salon);
   return (
     <>
       <View
