@@ -8,16 +8,6 @@ import { updateSalonProvidersfordisplay } from "../features/salon/salonSlice";
 import colors from "../theme/colors";
 
 const SalonpageOne = () => {
-  const salon = useSelector((state) => state.salon.salon);
-  const dispatch = useDispatch();
-
-  useEffect(() => {
-    const payLoad = salon?.serviceproviders.map((provider) => ({
-      ...provider,
-      display: "none",
-    }));
-    dispatch(updateSalonProvidersfordisplay(payLoad));
-  }, []);
   return (
     <>
       <View
