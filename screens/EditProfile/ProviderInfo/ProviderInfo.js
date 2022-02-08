@@ -253,9 +253,10 @@ const ProviderInfo = () => {
                       each.id === provider?.id
                         ? "white"
                         : "hsla(0,0%,100%,.815)",
-                    borderWidth: each.id === provider?.id ? 3 : 0,
-                    borderColor: each.id === provider?.id ? "black" : "none",
-                    opacity: each.id === provider?.id ? 1 : 0.5,
+                    borderWidth: each.id === provider?.id ? 3 : 0.5,
+                    borderColor: each.id === provider?.id ? "black" : "white",
+
+                    opacity: 1,
                   },
                 ]}
               >
@@ -385,9 +386,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   TopContainer: {
-    borderBottomColor: colors.secondary,
-    borderBottomWidth: 4,
-    // backgroundColor: "orange",
+    // borderBottomColor: colors.secondary,
+    // borderBottomWidth: 4,
+    // backgroundColor: "skyblue",
     width: "100%",
     alignItems: "center",
   },
