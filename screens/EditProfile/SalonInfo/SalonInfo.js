@@ -42,7 +42,6 @@ const SalonInfo = () => {
 
   async function uploadSalonPhoto(setBackendData) {
     try {
-      alert("uploadSalonPhoto function working");
       const reference = ref(storage, `salonImages/${salon.id}/${salon.id}.jpg`);
       const img = await fetch(salon.salonPhoto);
       const byte = await img.blob();
