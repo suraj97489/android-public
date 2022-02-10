@@ -125,7 +125,6 @@ const SalonInfo = () => {
         <Text style={styles.label}>Salon Name</Text>
         <Input
           placeholder="Salon Name..."
-          autoFocus
           value={salon?.salonName}
           style={styles.input}
           onChangeText={(text) => {
