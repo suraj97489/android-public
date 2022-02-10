@@ -15,7 +15,6 @@ const DoneModal = () => {
   const provider = useSelector((state) => state.android.activeProvider);
   const customer = useSelector((state) => state.android.activeCustomer);
   const [extra, setExtra] = useState("");
-  const [lessCharges, setLessCharges] = useState("");
 
   let serviceWithCharges = customer?.service.map((eachServiceName) => {
     return salon?.services.find((service) => service.name === eachServiceName);
@@ -28,7 +27,6 @@ const DoneModal = () => {
   function closeDoneModal() {
     dispatch(updateDoneModal(false));
     setExtra("");
-    setLessCharges("");
   }
 
   async function done() {
@@ -73,7 +71,6 @@ const DoneModal = () => {
           customerPaid: customerPaid,
           addedBy: customer.addedBy,
           extra: extra === "" ? 0 : Number(extra),
-          lessCharges: lessCharges === "" ? 0 : Number(lessCharges),
         };
 
         let salonReportUpdatedArray = [report, ...salon.salonReport];
@@ -84,7 +81,6 @@ const DoneModal = () => {
         });
       });
       setExtra("");
-      setLessCharges("");
     } catch (e) {
       console.error("Something went wrong");
     }
@@ -128,30 +124,12 @@ const DoneModal = () => {
               containerStyle={{ width: "30%" }}
             />
           </View>
-          <View style={styles.service_Name_And_Charges_Container}>
-            <Text style={styles.textServiceNameAndCharges}>
-              less charges(optional)
-            </Text>
-            <Input
-              value={lessCharges}
-              onChangeText={(text) => {
-                let number = Number(text);
-                let boolean = isNaN(number);
-                if (!boolean) {
-                  let removedSpaces = text.replace(/ /g, "");
-                  setLessCharges(removedSpaces);
-                }
-              }}
-              style={{ width: "30%", paddingLeft: 5 }}
-              containerStyle={{ width: "30%" }}
-            />
-          </View>
 
           <View style={styles.totalWithCharges}>
             <Text style={styles.bolder}>total</Text>
             <Text style={styles.bolder}>
               {" "}
-              {Number(customerPaid) + Number(extra) - Number(lessCharges)}
+              {Number(customerPaid) + Number(extra)}
               Rs
             </Text>
           </View>

@@ -26,19 +26,11 @@ const EachReport = ({ item }) => {
           </Text>
         </View>
       ) : null}
-      {item.lessCharges !== 0 && item.lessCharges !== undefined ? (
-        <View style={styles.service_Name_And_Charges_Container}>
-          <Text style={styles.textServiceNameAndCharges}>less charges</Text>
-          <Text style={styles.textServiceNameAndCharges}>
-            - {item.lessCharges + " Rs"}
-          </Text>
-        </View>
-      ) : null}
 
       <View style={styles.totalWithCharges}>
         <Text style={styles.bolder}>total</Text>
         <Text style={styles.bolder}>
-          {Number(item.customerPaid) + item.extra - item.lessCharges}
+          {Number(item.customerPaid) + item.extra}
           Rs
         </Text>
       </View>

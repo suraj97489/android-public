@@ -21,13 +21,6 @@ const firebaseConfig = {
   messagingSenderId: MESSAGING_SENDER_ID,
   appId: APP_ID,
   measurementId: MEASUREMENT_ID,
-  // apiKey: "AIzaSyAUv7Pq-QMdrGKXR7UCzytHbYw2AHxHkkk",
-  // authDomain: "salonkattanew.firebaseapp.com",
-  // projectId: "salonkattanew",
-  // storageBucket: "salonkattanew.appspot.com",
-  // messagingSenderId: "786462931290",
-  // appId: "1:786462931290:web:e29160555434d424ec5b63",
-  // measurementId: "G-MRCG06HR18",
 };
 
 const firebaseApp = initializeApp(firebaseConfig);
