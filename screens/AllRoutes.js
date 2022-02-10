@@ -51,6 +51,11 @@ const AllRoutes = () => {
           const payLoad = { ...doc.data(), id: doc.id };
 
           dispatch(updateSalon(payLoad));
+          if (doc.data().shopOpen) {
+            dispatch(updateShopButtonText("shop is open"));
+          } else {
+            dispatch(updateShopButtonText("shop is closed"));
+          }
         }
       });
     });
@@ -70,11 +75,6 @@ const AllRoutes = () => {
             if (doc.data().salonUsername === user.email) {
               const payLoad = { ...doc.data(), id: doc.id };
               dispatch(updateSalon(payLoad));
-              if (doc.data().shopOpen) {
-                dispatch(updateShopButtonText("shop is open"));
-              } else {
-                dispatch(updateShopButtonText("shop is closed"));
-              }
             }
           });
         }
