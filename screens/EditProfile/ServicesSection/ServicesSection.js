@@ -1,6 +1,6 @@
 import { doc, runTransaction } from "firebase/firestore";
 import React, { useContext, useState } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Button, Input } from "react-native-elements";
 
 import { db } from "../../../firebaseAndroid";
@@ -179,13 +179,16 @@ const ServicesSection = () => {
       ))}
 
       {!addingService && (
-        <Button
-          containerStyle={{ margin: 25, borderRadius: 50 }}
-          onPress={ClickedOnAddService}
-          buttonStyle={{ borderRadius: 20 }}
-          titleStyle={{ color: "white" }}
-          title="ADD SERVICE"
-        />
+        // <Button
+        //   containerStyle={{ margin: 25, borderRadius: 50 }}
+        //   onPress={ClickedOnAddService}
+        //   buttonStyle={{ borderRadius: 20 }}
+        //   titleStyle={{ color: "white" }}
+        //   title="ADD SERVICE"
+        // />
+        <Pressable style={styles.addService} onPress={ClickedOnAddService}>
+          <Text style={{ fontWeight: "bold" }}>ADD SERVICE</Text>
+        </Pressable>
       )}
     </View>
   );
@@ -220,4 +223,12 @@ const styles = StyleSheet.create({
     // backgroundColor: "yellow",
   },
   buttons: { width: 100, margin: 10 },
+  addService: {
+    borderRadius: 10,
+    margin: 10,
+    backgroundColor: colors.secondary,
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 9,
+  },
 });
