@@ -1,8 +1,8 @@
 import { doc, runTransaction } from "firebase/firestore";
-import React, {  useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Pressable } from "react-native";
-import { StyleSheet, Text,  View } from "react-native";
-import {  Image } from "react-native-elements";
+import { StyleSheet, Text, View } from "react-native";
+import { Image } from "react-native-elements";
 
 import { db } from "../firebaseAndroid";
 import colors from "../theme/colors";
@@ -145,7 +145,7 @@ const styles = StyleSheet.create({
     zIndex: 1,
   },
   image_wrapper: {
-    backgroundColor: "yellow",
+    backgroundColor: "black",
     borderRadius: 50,
     overflow: "hidden",
     position: "absolute",
