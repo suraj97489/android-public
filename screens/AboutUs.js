@@ -1,6 +1,5 @@
-import React, { useContext, useEffect } from "react";
+import React from "react";
 import { StyleSheet, Text, View } from "react-native";
-import { getAuth, signOut } from "firebase/auth";
 
 const AboutUs = () => {
   return (

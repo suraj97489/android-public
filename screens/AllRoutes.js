@@ -21,6 +21,7 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 import { updateCustomer } from "../features/authSlice";
 import { updateShopButtonText } from "../features/androidSlice";
 const Drawer = createDrawerNavigator();
+
 const globalScreenOptions = {
   headerStyle: {
     backgroundColor: colors.secondary,
@@ -29,6 +30,7 @@ const globalScreenOptions = {
   headerTintColor: "white",
   presentation: "card",
 };
+
 const auth = getAuth();
 //   signOut(auth)
 //     .then(() => {
@@ -98,13 +100,12 @@ const AllRoutes = () => {
             <Drawer.Screen name="Home" component={SpHome} />
             <Drawer.Screen name="Edit Profile" component={EditProfile} />
             <Drawer.Screen name="Report" component={Report} />
+            <Drawer.Screen name="Contact Us" component={ContactUs} />
             <Drawer.Screen name="Log Out" component={LogOut} />
           </>
         ) : (
           <Drawer.Screen name="Login" component={Login} />
         )}
-
-        <Drawer.Screen name="Contact Us" component={ContactUs} />
         <Drawer.Screen name="About" component={AboutUs} />
       </Drawer.Navigator>
     </NavigationContainer>
