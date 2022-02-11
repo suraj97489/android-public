@@ -21,7 +21,7 @@ const DoneModal = () => {
   });
 
   let customerPaid = serviceWithCharges?.reduce((accumulte, service) => {
-    return accumulte + Number(service.charges);
+    return accumulte + Number(service?.charges);
   }, 0);
 
   function closeDoneModal() {
@@ -98,10 +98,10 @@ const DoneModal = () => {
           {serviceWithCharges?.map((service, i) => (
             <View key={i} style={styles.service_Name_And_Charges_Container}>
               <Text style={styles.textServiceNameAndCharges}>
-                {service.name}
+                {service?.name}
               </Text>
               <Text style={styles.textServiceNameAndCharges}>
-                {service.charges + " Rs"}
+                {service?.charges + " Rs"}
               </Text>
             </View>
           ))}
