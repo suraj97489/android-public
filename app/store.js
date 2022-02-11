@@ -11,4 +11,5 @@ export const store = configureStore({
     customer,
     modal,
   },
+  devTools: false,
 });
