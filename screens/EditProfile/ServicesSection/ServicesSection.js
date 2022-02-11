@@ -1,5 +1,5 @@
 import { doc, runTransaction } from "firebase/firestore";
-import React, { useContext, useState } from "react";
+import React, { useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Button, Input } from "react-native-elements";
 

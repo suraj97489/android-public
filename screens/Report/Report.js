@@ -27,7 +27,6 @@ const Report = () => {
     } else if (item.date.toLowerCase().includes(searchTerm.toLowerCase())) {
       return item;
     } else if (item.time.toLowerCase().includes(searchTerm.toLowerCase())) {
-      console.log(item);
       return item;
     } else if (
       item.services.some((service) =>
