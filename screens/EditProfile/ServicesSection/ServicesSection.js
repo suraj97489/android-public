@@ -19,9 +19,19 @@ const ServicesSection = () => {
   const [addingService, setAddingService] = useState(false);
 
   function ClickedOnEdit(i, service) {
-    setAddingService(false);
-    setServiceIndex(i);
-    setUpdatedService({ name: service.name, charges: service.charges });
+    let totalCustomers = salon.serviceproviders
+      .map((eachpro) => eachpro.customers.map((cust) => cust))
+      .flat();
+
+    if (totalCustomers.length > 0) {
+      alert(
+        "sorry!you can add,edit or delete services when there is not customer"
+      );
+    } else {
+      setAddingService(false);
+      setServiceIndex(i);
+      setUpdatedService({ name: service.name, charges: service.charges });
+    }
   }
   async function ClickedOnDeleteService(i) {
     setAddingService(false);
@@ -34,24 +44,45 @@ const ServicesSection = () => {
         }
         let newServicesarr = thisDoc
           .data()
-          .services.filter((service, index) => index !== i);
-
-        transaction.update(docRef, { services: newServicesarr });
+          .services.filter((eachService, index) => index !== i);
+        let totalCustomers = thisDoc
+          .data()
+          .serviceproviders.map((eachpro) =>
+            eachpro.customers.map((cust) => cust)
+          )
+          .flat();
+        if (totalCustomers.length > 0) {
+          alert(
+            "sorry!you can add, edit or delete services when there is not customer"
+          );
+        } else {
+          transaction.update(docRef, { services: newServicesarr });
+        }
       });
     } catch (e) {
       console.error("something went wrong");
     }
   }
   function ClickedOnAddService() {
-    setAddingService(true);
-    const payLoad = {
-      ...salon,
-      services: [...salon.services, { name: "", charges: "" }],
-    };
-    dispatch(updateSalon(payLoad));
+    let totalCustomers = salon.serviceproviders
+      .map((eachpro) => eachpro.customers.map((cust) => cust))
+      .flat();
 
-    setServiceIndex(salon.services.length);
-    setUpdatedService({ name: "", charges: "" });
+    if (totalCustomers.length > 0) {
+      alert(
+        "sorry!you can add,edit or delete services when there is not customer"
+      );
+    } else {
+      setAddingService(true);
+      const payLoad = {
+        ...salon,
+        services: [...salon.services, { name: "", charges: "" }],
+      };
+      dispatch(updateSalon(payLoad));
+
+      setServiceIndex(salon.services.length);
+      setUpdatedService({ name: "", charges: "" });
+    }
   }
   async function ClickedOnSaveService(i, service) {
     setAddingService(false);
@@ -69,6 +100,7 @@ const ServicesSection = () => {
             return service;
           }
         });
+
         transaction.update(docRef, { services: newServicesArray });
       });
       setServiceIndex(null);
