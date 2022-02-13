@@ -192,24 +192,30 @@ const ProviderInfo = () => {
     async function setBackendDataAndSalon(url) {
       const docRef = doc(db, "salon", salon.id);
       try {
+        function newArraySaveChangesfunc(salonValue) {
+          return salonValue.serviceproviders.map((each) => {
+            if (each.id === provider.id) {
+              return {
+                ...provider,
+
+                providerPhoto: url ? url : provider.providerPhoto,
+              };
+            } else {
+              return each;
+            }
+          });
+        }
+        const payLoad = {
+          ...salon,
+          serviceproviders: newArraySaveChangesfunc(salon),
+        };
+        dispatch(updateSalon(payLoad));
         await runTransaction(db, async (transaction) => {
           const thisDoc = await transaction.get(docRef);
           if (!thisDoc.exists()) {
             throw "Document does not exist!";
           }
-          let newProvidersArray = thisDoc
-            .data()
-            .serviceproviders.map((each) => {
-              if (each.id === provider.id) {
-                return {
-                  ...provider,
-
-                  providerPhoto: url ? url : provider.providerPhoto,
-                };
-              } else {
-                return each;
-              }
-            });
+          let newProvidersArray = newArraySaveChangesfunc(thisDoc.data());
           transaction.update(docRef, { serviceproviders: newProvidersArray });
         });
       } catch (e) {
