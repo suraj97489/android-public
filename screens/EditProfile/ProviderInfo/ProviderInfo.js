@@ -19,6 +19,7 @@ import * as ImagePicker from "expo-image-picker";
 import { getDownloadURL, ref, uploadBytes } from "firebase/storage";
 import { useSelector, useDispatch } from "react-redux";
 import { updateButtonDisabled } from "../../../features/androidSlice";
+import { updateSalon } from "../../../features/salon/salonSlice";
 
 const ProviderInfo = () => {
   const salon = useSelector((state) => state.salon.salon);
@@ -132,6 +133,15 @@ const ProviderInfo = () => {
       const docRef = doc(db, "salon", salon.id);
 
       try {
+        let providersArray = [
+          ...salon.serviceproviders,
+          { ...addHim, providerPhoto: url },
+        ];
+
+        const payLoad = { ...salon, serviceproviders: providersArray };
+
+        dispatch(updateSalon(payLoad));
+
         await runTransaction(db, async (transaction) => {
           const thisDoc = await transaction.get(docRef);
           if (!thisDoc.exists()) {
