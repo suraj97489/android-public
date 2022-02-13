@@ -160,9 +160,6 @@ const ServicesSection = () => {
                   value={updatedService.name}
                 />
                 <Input
-                  onSubmitEditing={() => {
-                    ClickedOnSaveService(i, service);
-                  }}
                   onChangeText={(text) => {
                     setUpdatedService({
                       ...updatedService,
