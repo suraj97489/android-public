@@ -129,7 +129,7 @@ const SalonInfo = () => {
           onChangeText={(text) => {
             let booleanValue =
               text.length < 2 ||
-              salon.address.length < 20 ||
+              salon.address.length < 12 ||
               salon.mobile.length !== 10;
             dispatch(updateButtonDisabled(booleanValue));
 
@@ -172,7 +172,7 @@ const SalonInfo = () => {
           onChangeText={(text) => {
             let booleanValue =
               text.length !== 10 ||
-              salon.address.length < 20 ||
+              salon.address.length < 12 ||
               salon.salonName.length < 2;
 
             dispatch(updateButtonDisabled(booleanValue));
@@ -194,7 +194,7 @@ const SalonInfo = () => {
           onChangeText={(text) => {
             let booleanValue =
               salon.salonName.length < 2 ||
-              salon.address.length < 25 ||
+              salon.address.length < 12 ||
               salon.mobile.length !== 10;
 
             dispatch(updateButtonDisabled(booleanValue));
