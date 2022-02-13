@@ -99,7 +99,6 @@ const ServicesSection = () => {
     }
   }
   async function ClickedOnSaveService(i, service) {
-    setAddingService(false);
     const docRef = doc(db, "salon", salon.id);
     function serviceArrUpdateFunc(salonValue) {
       return salonValue.services.map((service, index) => {
@@ -110,19 +109,22 @@ const ServicesSection = () => {
         }
       });
     }
-    const payLoad = { ...salon, services: serviceArrUpdateFunc(salon) };
-    dispatch(updateSalon(payLoad));
+    // const payLoad = { ...salon, services: serviceArrUpdateFunc(salon) };
+    // dispatch(updateSalon(payLoad));
     try {
       await runTransaction(db, async (transaction) => {
         const thisDoc = await transaction.get(docRef);
         if (!thisDoc.exists()) {
           throw "doc does not exist";
         }
+
         let newServicesArray = serviceArrUpdateFunc(thisDoc.data());
+        console.log(newServicesArray);
 
         transaction.update(docRef, { services: newServicesArray });
       });
       setServiceIndex(null);
+      setAddingService(false);
     } catch (e) {
       console.error("something went wrong");
     }
