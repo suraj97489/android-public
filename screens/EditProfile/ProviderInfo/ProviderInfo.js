@@ -99,7 +99,7 @@ const ProviderInfo = () => {
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 4],
-      quality: 1,
+      quality: 0.2,
     });
 
     if (!result.cancelled) {
