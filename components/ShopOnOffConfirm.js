@@ -20,6 +20,11 @@ const ShopOnOffConfirm = () => {
     closeshopOnOffModal();
     const docRef = doc(db, "salon", salon.id);
     try {
+      if (shopButtonText === "shop is open") {
+        dispatch(updateShopButtonText("shop is closed"));
+      } else {
+        dispatch(updateShopButtonText("shop is open"));
+      }
       await runTransaction(db, async (transaction) => {
         const thisDoc = await transaction.get(docRef);
         if (!thisDoc.exists()) {
@@ -29,11 +34,6 @@ const ShopOnOffConfirm = () => {
           shopOpen: shopButtonText === "shop is open" ? false : true,
         });
       });
-      if (shopButtonText === "shop is open") {
-        dispatch(updateShopButtonText("shop is closed"));
-      } else {
-        dispatch(updateShopButtonText("shop is open"));
-      }
     } catch (e) {
       console.error("something went wrong");
     }
