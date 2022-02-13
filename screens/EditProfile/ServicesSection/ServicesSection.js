@@ -37,20 +37,34 @@ const ServicesSection = () => {
     setAddingService(false);
     const docRef = doc(db, "salon", salon.id);
     try {
+      function deleteServiceFunc(salonValue) {
+        return salonValue.services.filter((eachService, index) => index !== i);
+      }
+      function totalCustomersFunc(salonValue) {
+        return salonValue.serviceproviders
+          .map((eachpro) => eachpro.customers.map((cust) => cust))
+          .flat();
+      }
+
+      let SalonAllCustomers = totalCustomersFunc(salon);
+
+      if (SalonAllCustomers.length > 0) {
+        alert(
+          "sorry!you can add, edit or delete services when there is not customer"
+        );
+        return;
+      } else {
+        const payLoad = { ...salon, services: deleteServiceFunc(salon) };
+        dispatch(updateSalon(payLoad));
+      }
+
       await runTransaction(db, async (transaction) => {
         const thisDoc = await transaction.get(docRef);
         if (!thisDoc.exists()) {
           throw "document does not exist";
         }
-        let newServicesarr = thisDoc
-          .data()
-          .services.filter((eachService, index) => index !== i);
-        let totalCustomers = thisDoc
-          .data()
-          .serviceproviders.map((eachpro) =>
-            eachpro.customers.map((cust) => cust)
-          )
-          .flat();
+        let newServicesarr = deleteServiceFunc(thisDoc.data());
+        let totalCustomers = totalCustomersFunc(thisDoc.data());
         if (totalCustomers.length > 0) {
           alert(
             "sorry!you can add, edit or delete services when there is not customer"
