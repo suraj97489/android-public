@@ -17,6 +17,7 @@ import {
   updateSelectedServices,
   updateServices,
 } from "../features/modalSlice";
+import { updateSalon } from "../features/salon/salonSlice";
 const SpModal = () => {
   const salon = useSelector((state) => state.salon.salon);
   const modalVisible = useSelector((state) => state.android.modalVisible);
@@ -48,6 +49,51 @@ const SpModal = () => {
   async function addOrEditCustomer() {
     dispatch(updateModalVisible(!modalVisible));
     const docRef = doc(db, "salon", salon.id);
+    function addCustomerFunc(salonValue) {
+      return salonValue.serviceproviders.map((provider) => {
+        if (provider.id === providerId) {
+          let newCustomer = {
+            email: "",
+            mobile: customerMobile,
+            name: customerName,
+            service: selectedServices,
+            checkStatus: false,
+            addedBy: "provider",
+          };
+          let customers = [...provider.customers, newCustomer];
+
+          return { ...provider, customers };
+        } else {
+          return provider;
+        }
+      });
+    }
+
+    function editCustomerFunc(salonValue) {
+      return salonValue.serviceproviders.map((provider) => {
+        if (provider.id === providerId) {
+          let customers = provider.customers.map((eachcust, index) => {
+            if (index === custIndex) {
+              let service = selectedServices;
+              return { ...eachcust, service };
+            } else {
+              return eachcust;
+            }
+          });
+          return { ...provider, customers };
+        } else {
+          return provider;
+        }
+      });
+    }
+
+    if (addingcustomer) {
+      let newArr = addCustomerFunc(salon);
+      dispatch(updateSalon({ ...salon, serviceproviders: newArr }));
+    } else {
+      let newArr = editCustomerFunc(salon);
+      dispatch(updateSalon({ ...salon, serviceproviders: newArr }));
+    }
     try {
       let newprovidersarray;
 
@@ -59,45 +105,11 @@ const SpModal = () => {
         }
 
         if (addingcustomer) {
-          newprovidersarray = thisDoc
-            .data()
-            .serviceproviders.map((provider) => {
-              if (provider.id === providerId) {
-                let newCustomer = {
-                  email: "",
-                  mobile: customerMobile,
-                  name: customerName,
-                  service: selectedServices,
-                  checkStatus: false,
-                  addedBy: "provider",
-                };
-                let customers = [...provider.customers, newCustomer];
-
-                return { ...provider, customers };
-              } else {
-                return provider;
-              }
-            });
+          newprovidersarray = addCustomerFunc(thisDoc.data());
 
           transaction.update(docRef, { serviceproviders: newprovidersarray });
         } else {
-          newprovidersarray = thisDoc
-            .data()
-            .serviceproviders.map((provider) => {
-              if (provider.id === providerId) {
-                let customers = provider.customers.map((eachcust, index) => {
-                  if (index === custIndex) {
-                    let service = selectedServices;
-                    return { ...eachcust, service };
-                  } else {
-                    return eachcust;
-                  }
-                });
-                return { ...provider, customers };
-              } else {
-                return provider;
-              }
-            });
+          newprovidersarray = editCustomerFunc(thisDoc.data());
 
           transaction.update(docRef, { serviceproviders: newprovidersarray });
         }
