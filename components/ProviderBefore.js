@@ -8,7 +8,10 @@ import { db } from "../firebaseAndroid";
 import colors from "../theme/colors";
 import { AntDesign } from "@expo/vector-icons";
 import { useSelector, useDispatch } from "react-redux";
-import { updateSalonProvidersfordisplay } from "../features/salon/salonSlice";
+import {
+  updateSalon,
+  updateSalonProvidersfordisplay,
+} from "../features/salon/salonSlice";
 
 const ProviderBefore = ({ provider }) => {
   const salonProvidersfordisplay = useSelector(
@@ -35,21 +38,26 @@ const ProviderBefore = ({ provider }) => {
   async function bookingHandler() {
     const docRef = doc(db, "salon", salon.id);
     try {
+      function bookingFunc(salonValue) {
+        return salonValue.serviceproviders.map((each) => {
+          if (each.id === provider.id) {
+            return { ...each, bookingOn: !bookingOn };
+          } else {
+            return each;
+          }
+        });
+      }
+      const payLoad = { ...salon, serviceproviders: bookingFunc(salon) };
+
+      dispatch(updateSalon(payLoad));
+
       await runTransaction(db, async (transaction) => {
         const thisDoc = await transaction.get(docRef);
         if (!thisDoc.exists()) {
           throw "Document does not exist!";
         }
 
-        let arr = thisDoc.data().serviceproviders.map((each) => {
-          if (each.id === provider.id) {
-            each.bookingOn = !bookingOn;
-
-            return each;
-          } else {
-            return each;
-          }
-        });
+        let arr = bookingFunc(thisDoc.data());
         transaction.update(docRef, { serviceproviders: arr });
         return arr;
       });
