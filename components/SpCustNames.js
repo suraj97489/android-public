@@ -27,6 +27,7 @@ import {
   updateProviderId,
   updateDeleteCustomerModal,
 } from "../features/androidSlice";
+import { updateSalon } from "../features/salon/salonSlice";
 
 const SpCustNames = ({ customer, index, provider, resetSpModaldata }) => {
   const salon = useSelector((state) => state.salon.salon);
@@ -51,14 +52,8 @@ const SpCustNames = ({ customer, index, provider, resetSpModaldata }) => {
     setSortButton(false);
     const docRef = doc(db, "salon", salon.id);
     try {
-      await runTransaction(db, async (transaction) => {
-        const thisDoc = await transaction.get(docRef);
-
-        if (!thisDoc.exists()) {
-          throw "Document does not exist!";
-        }
-
-        let newprovidersArray = thisDoc.data().serviceproviders.map((each) => {
+      function sortFuncArray(salonValue) {
+        return salonValue.serviceproviders.map((each) => {
           if (each.id === provider.id) {
             each.customers = each.customers.filter((cust, i) => i !== index);
             each.customers.splice(index - 1, 0, customer);
@@ -67,6 +62,17 @@ const SpCustNames = ({ customer, index, provider, resetSpModaldata }) => {
             return each;
           }
         });
+      }
+      const payLoad = { ...salon, serviceproviders: sortFuncArray(salon) };
+      dispatch(updateSalon(payLoad));
+      await runTransaction(db, async (transaction) => {
+        const thisDoc = await transaction.get(docRef);
+
+        if (!thisDoc.exists()) {
+          throw "Document does not exist!";
+        }
+
+        let newprovidersArray = sortFuncArray(thisDoc.data());
 
         transaction.update(docRef, { serviceproviders: newprovidersArray });
       });
