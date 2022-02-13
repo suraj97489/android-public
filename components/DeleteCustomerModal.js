@@ -6,6 +6,7 @@ import { Button } from "react-native-elements";
 import colors from "../theme/colors";
 import { doc, runTransaction } from "firebase/firestore";
 import { db } from "../firebaseAndroid";
+import { updateSalon } from "../features/salon/salonSlice";
 
 const DeleteCustomerModal = () => {
   const dispatch = useDispatch();
@@ -24,12 +25,9 @@ const DeleteCustomerModal = () => {
     const docRef = doc(db, "salon", salon.id);
     try {
       let newprovidersarray;
-      await runTransaction(db, async (transaction) => {
-        let thisDoc = await transaction.get(docRef);
-        if (!thisDoc.exists()) {
-          throw "Document does not exist!";
-        }
-        newprovidersarray = thisDoc.data().serviceproviders.map((each) => {
+
+      function deleteFunc(salonValue) {
+        return salonValue.serviceproviders.map((each) => {
           if (each.id === provider.id) {
             let custArray = provider.customers.filter((cust, i) => i !== index);
             return { ...provider, customers: custArray };
@@ -37,6 +35,15 @@ const DeleteCustomerModal = () => {
             return each;
           }
         });
+      }
+      const payLoad = { ...salon, serviceproviders: deleteFunc(salon) };
+      dispatch(updateSalon(payLoad));
+      await runTransaction(db, async (transaction) => {
+        let thisDoc = await transaction.get(docRef);
+        if (!thisDoc.exists()) {
+          throw "Document does not exist!";
+        }
+        newprovidersarray = deleteFunc(thisDoc.data());
 
         transaction.update(docRef, { serviceproviders: newprovidersarray });
       });
