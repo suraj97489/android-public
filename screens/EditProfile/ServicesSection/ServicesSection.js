@@ -152,9 +152,6 @@ const ServicesSection = () => {
               <>
                 <Input
                   autoFocus
-                  onSubmitEditing={() => {
-                    ClickedOnSaveService(i, service);
-                  }}
                   onChangeText={(text) => {
                     setUpdatedService({ ...updatedService, name: text });
                   }}
