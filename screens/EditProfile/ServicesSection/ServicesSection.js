@@ -87,19 +87,24 @@ const ServicesSection = () => {
   async function ClickedOnSaveService(i, service) {
     setAddingService(false);
     const docRef = doc(db, "salon", salon.id);
+    function serviceArrUpdateFunc(salonValue) {
+      return salonValue.services.map((service, index) => {
+        if (index === i) {
+          return updatedService;
+        } else {
+          return service;
+        }
+      });
+    }
+    const payLoad = { ...salon, services: serviceArrUpdateFunc(salon) };
+    dispatch(updateSalon(payLoad));
     try {
       await runTransaction(db, async (transaction) => {
         const thisDoc = await transaction.get(docRef);
         if (!thisDoc.exists()) {
           throw "doc does not exist";
         }
-        let newServicesArray = salon.services.map((service, index) => {
-          if (index === i) {
-            return updatedService;
-          } else {
-            return service;
-          }
-        });
+        let newServicesArray = serviceArrUpdateFunc(thisDoc.data());
 
         transaction.update(docRef, { services: newServicesArray });
       });
