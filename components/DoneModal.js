@@ -7,6 +7,7 @@ import colors from "../theme/colors";
 import { doc, runTransaction } from "firebase/firestore";
 import { db } from "../firebaseAndroid";
 import { Input } from "react-native-elements";
+import { updateSalon } from "../features/salon/salonSlice";
 
 const DoneModal = () => {
   const dispatch = useDispatch();
@@ -32,13 +33,8 @@ const DoneModal = () => {
   async function done() {
     const docRef = doc(db, "salon", salon.id);
     try {
-      await runTransaction(db, async (transaction) => {
-        const thisDoc = await transaction.get(docRef);
-        if (!thisDoc.exists()) {
-          throw "Document does not exist!";
-        }
-
-        let newprovidersarray = salon.serviceproviders.map((each) => {
+      function newArrayFunction(salonValue) {
+        return salonValue.serviceproviders.map((each) => {
           if (each.id === provider.id) {
             let time = new Date().getTime();
             let customers = each.customers.filter((cust, i) => i !== 0);
@@ -56,24 +52,38 @@ const DoneModal = () => {
             return each;
           }
         });
+      }
 
-        let date = new Date().toDateString();
-        let time = new Date().toLocaleTimeString();
+      let date = new Date().toDateString();
+      let time = new Date().toLocaleTimeString();
 
-        let report = {
-          custName: customer.name,
-          custMobile: customer.mobile,
-          providerName: provider.fname + " " + provider.lname,
-          date: date,
-          time: time,
-          services: serviceWithCharges,
-          providerId: provider.id,
-          customerPaid: customerPaid,
-          addedBy: customer.addedBy,
-          extra: extra === "" ? 0 : Number(extra),
-        };
+      let report = {
+        custName: customer.name,
+        custMobile: customer.mobile,
+        providerName: provider.fname + " " + provider.lname,
+        date: date,
+        time: time,
+        services: serviceWithCharges,
+        providerId: provider.id,
+        customerPaid: customerPaid,
+        addedBy: customer.addedBy,
+        extra: extra === "" ? 0 : Number(extra),
+      };
 
-        let salonReportUpdatedArray = [report, ...salon.salonReport];
+      let salonReportUpdatedArray = [report, ...salon.salonReport];
+      const payLoad = {
+        ...salon,
+        serviceproviders: newArrayFunction(salon),
+        salonReport: salonReportUpdatedArray,
+      };
+      dispatch(updateSalon(payLoad));
+      await runTransaction(db, async (transaction) => {
+        const thisDoc = await transaction.get(docRef);
+        if (!thisDoc.exists()) {
+          throw "Document does not exist!";
+        }
+
+        let newprovidersarray = newArrayFunction(thisDoc.data());
 
         transaction.update(docRef, {
           serviceproviders: newprovidersarray,
