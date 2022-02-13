@@ -1,5 +1,5 @@
 import { doc, runTransaction } from "firebase/firestore";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { Button, Input } from "react-native-elements";
 
@@ -17,6 +17,13 @@ const ServicesSection = () => {
     charges: "",
   });
   const [addingService, setAddingService] = useState(false);
+
+  useEffect(() => {
+    let arr = salon?.services?.filter(
+      (service) => service.name !== "" || service.charges !== ""
+    );
+    dispatch(updateSalon({ ...salon, services: arr }));
+  }, []);
 
   function ClickedOnEdit(i, service) {
     let totalCustomers = salon.serviceproviders
