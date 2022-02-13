@@ -71,6 +71,9 @@ const Login = (props) => {
         placeholder="Password"
         value={LoginDetails.salonPassword}
         secureTextEntry
+        onSubmitEditing={() => {
+          LoginHandler();
+        }}
         onChangeText={(text) => {
           let removedSpaces = text.replace(/ /g, "");
           setLoginDetails({ ...LoginDetails, salonPassword: removedSpaces });
