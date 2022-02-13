@@ -25,19 +25,6 @@ const ProviderInfo = () => {
   const salon = useSelector((state) => state.salon.salon);
   const buttonDisabled = useSelector((state) => state.android.buttonDisabled);
   const dispatch = useDispatch();
-  useEffect(() => {
-    getPermission();
-  }, []);
-
-  const getPermission = async () => {
-    if (Platform.OS !== "web") {
-      const { status } =
-        await ImagePicker.requestMediaLibraryPermissionsAsync();
-      if (status !== "granted") {
-        alert("Sorry, we need camera roll permissions to make this work!");
-      }
-    }
-  };
 
   const [provider, setProvider] = useState();
   const [showAddButton, setShowAddButton] = useState(false);

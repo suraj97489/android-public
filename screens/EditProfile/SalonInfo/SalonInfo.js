@@ -1,6 +1,6 @@
 import { doc, runTransaction } from "firebase/firestore";
-import React, { useContext, useState } from "react";
-import { Image } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
+import { Image, Platform } from "react-native";
 import { StyleSheet, Text, View } from "react-native";
 import { Button, Input } from "react-native-elements";
 
@@ -17,6 +17,20 @@ const SalonInfo = () => {
   const buttonDisabled = useSelector((state) => state.android.buttonDisabled);
   const dispatch = useDispatch();
   const [imageChanged, setImageChanged] = useState(false);
+
+  useEffect(() => {
+    getPermission();
+  }, []);
+
+  const getPermission = async () => {
+    if (Platform.OS !== "web") {
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== "granted") {
+        alert("Sorry, we need camera roll permissions to make this work!");
+      }
+    }
+  };
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
