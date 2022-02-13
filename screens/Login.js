@@ -64,7 +64,10 @@ const Login = (props) => {
         value={LoginDetails.salonUsername}
         onChangeText={(text) => {
           let removedSpaces = text.replace(/ /g, "");
-          setLoginDetails({ ...LoginDetails, salonUsername: removedSpaces });
+          setLoginDetails({
+            ...LoginDetails,
+            salonUsername: removedSpaces.toLowerCase(),
+          });
         }}
       />
       <Input
@@ -76,7 +79,10 @@ const Login = (props) => {
         }}
         onChangeText={(text) => {
           let removedSpaces = text.replace(/ /g, "");
-          setLoginDetails({ ...LoginDetails, salonPassword: removedSpaces });
+          setLoginDetails({
+            ...LoginDetails,
+            salonPassword: removedSpaces.toLowerCase(),
+          });
         }}
       />
       <Button
