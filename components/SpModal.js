@@ -49,7 +49,7 @@ const SpModal = () => {
   async function addOrEditCustomer() {
     dispatch(updateModalVisible(!modalVisible));
     const docRef = doc(db, "salon", salon.id);
-   
+
     try {
       let newprovidersarray;
       function addCustomerFunc(salonValue) {
@@ -64,14 +64,14 @@ const SpModal = () => {
               addedBy: "provider",
             };
             let customers = [...provider.customers, newCustomer];
-  
+
             return { ...provider, customers };
           } else {
             return provider;
           }
         });
       }
-  
+
       function editCustomerFunc(salonValue) {
         return salonValue.serviceproviders.map((provider) => {
           if (provider.id === providerId) {
@@ -89,7 +89,7 @@ const SpModal = () => {
           }
         });
       }
-  
+
       if (addingcustomer) {
         let newArr = addCustomerFunc(salon);
         dispatch(updateSalon({ ...salon, serviceproviders: newArr }));
@@ -136,6 +136,7 @@ const SpModal = () => {
               position: "absolute",
               right: -6,
               top: -6,
+              zIndex: 1,
             }}
             onPress={() => {
               dispatch(updateModalVisible(false));
