@@ -43,7 +43,7 @@ const AllRoutes = () => {
       try {
         await SplashScreen.preventAutoHideAsync();
 
-        await new Promise((resolve) => setTimeout(resolve, 2000));
+        await new Promise((resolve) => setTimeout(resolve, 3000));
       } catch (e) {
         console.warn(e);
       } finally {
