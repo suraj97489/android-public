@@ -59,7 +59,7 @@ const Report = () => {
                 revenue :{" "}
                 {filteredItems?.reduce((accumulte, report) => {
                   return accumulte + Number(report.customerPaid);
-                }, 0)}
+                }, 0)}{" "}
                 Rs
               </Text>
             </>
