@@ -60,7 +60,6 @@ const Login = (props) => {
       <Input
         placeholder="Username"
         type="email"
-        autoFocus
         value={LoginDetails.salonUsername}
         onChangeText={(text) => {
           let removedSpaces = text.replace(/ /g, "");

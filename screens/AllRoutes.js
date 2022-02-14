@@ -9,6 +9,7 @@ import LogOut from "./LogOut";
 import Report from "./Report/Report";
 import SpHome from "./SpHome";
 import EditProfile from "./EditProfile/EditProfile";
+import * as SplashScreen from "expo-splash-screen";
 
 import colors from "../theme/colors";
 
@@ -32,17 +33,26 @@ const globalScreenOptions = {
 };
 
 const auth = getAuth();
-//   signOut(auth)
-//     .then(() => {
-//    setCustomer();
-//     })
-//     .catch((error) => {
-//       // An error happened.
-//     });
 
 const AllRoutes = () => {
   const customer = useSelector((state) => state.customer.customer);
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    async function prepare() {
+      try {
+        await SplashScreen.preventAutoHideAsync();
+
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        await SplashScreen.hideAsync();
+      }
+    }
+
+    prepare();
+  }, []);
 
   useEffect(() => {
     const unsubscribe = onSnapshot(collection(db, "salon"), (snapshot) => {
