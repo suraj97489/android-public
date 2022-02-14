@@ -8,7 +8,7 @@ const SpinnerScreen = () => {
         flex: 1,
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "black",
+        backgroundColor: "white",
       }}
     >
       <ActivityIndicator animating={true} size="large" color="white" />
