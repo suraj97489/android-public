@@ -32,7 +32,7 @@ const ServicesSection = () => {
 
     if (totalCustomers.length > 0) {
       alert(
-        "sorry!you can add,edit or delete services when there is not customer"
+        "sorry!you can add,edit or delete services when there is no customer"
       );
     } else {
       setAddingService(false);
