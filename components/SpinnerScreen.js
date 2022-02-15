@@ -1,5 +1,6 @@
 import { StyleSheet, View, ActivityIndicator } from "react-native";
 import React from "react";
+import colors from "../theme/colors";
 
 const SpinnerScreen = () => {
   return (
@@ -11,7 +12,11 @@ const SpinnerScreen = () => {
         backgroundColor: "white",
       }}
     >
-      <ActivityIndicator animating={true} size="large" color="white" />
+      <ActivityIndicator
+        animating={true}
+        size="large"
+        color={colors.secondary}
+      />
     </View>
   );
 };
