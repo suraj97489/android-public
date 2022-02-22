@@ -17,6 +17,7 @@ const ContactUs = () => {
   const [formData, setFormData] = useState(initialState);
 
   function submitContactUs() {
+    setFormData(initialState);
     addDoc(collection(db, "contactUs"), formData);
   }
   return (
