@@ -33,6 +33,10 @@ const SalonpageTwoBodyTop = () => {
     <View style={styles.salonpagetwo__body__top}>
       <Text style={styles.serviceproviders}>SERVICE PROVIDERS</Text>
       <Button
+        buttonStyle={{
+          backgroundColor:
+            shopButtonText === "shop is closed" ? "red" : "green",
+        }}
         onPress={() => {
           dispatch(updateShopOnoffModal(true));
         }}
