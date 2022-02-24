@@ -1,10 +1,9 @@
-import { doc, setDoc } from "firebase/firestore";
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { Button } from "react-native-elements";
 import { useDispatch, useSelector } from "react-redux";
 import { updateShopOnoffModal } from "../features/androidSlice";
-import { db } from "../firebaseAndroid";
+
 import colors from "../theme/colors";
 
 const SalonpageTwoBodyTop = () => {
@@ -18,6 +17,7 @@ const SalonpageTwoBodyTop = () => {
     time = new Date().toLocaleTimeString();
     setcTime(time);
   }
+
   useEffect(() => {
     let cancel = false;
     if (cancel) return;
